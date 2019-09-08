@@ -4,13 +4,16 @@
     <meta charset="utf-8">
     <title>BarPOS</title>
     <style>
+      body {font-family:arial;background-color: #000000}
       h1 {width:100%;color:white}
+      p {text-align: center; color: white}
       .controles {position:absolute; top:10%; width:100%; height:90%}
       .controlscontainer {position:fixed;right:0px;width:0%; height:100%; background-color: #111111;border:1px solid black}
-      .table {position:absolute;width:10vh;height:10vh;background-color: #666666; color: white;text-align: center;vertical-align:center;line-height:10vh}
+      .table {border:0.5vh solid white;position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;vertical-align:center;line-height:5vh}
       .table:hover {cursor: pointer}
       .tablecontainer {position:fixed;left:0px;width:100%; height:100%;border:1px solid black; hover}
       .tableheader {position:absolute;top:0px;height:10%;width:100%;text-align:center}
+      .timer {height:0%}
       #closetable {position:absolute;width:100%;height:10%;bottom:0px;background-color:#cc2222;color:white;font-size:5vh}
       #opentable {width:100%;height:90%; position: absolute; top:10%;z-index:99;background-color:#22cc22;color:white;font-size:5vh}
     </style>
@@ -18,19 +21,24 @@
   <body>
     <div class="tablecontainer" id='tables'>
       <div style='top:5%;right:5%' class="table" id='table1'>
-        MESA 1
+        <p style='margin:0px' id='nombremesa1'>MESA 1</p>
+        <p style='margin:0px' id='clock1' class='timer'></p>
       </div>
       <div style='top:5%;right:50%' class="table" id='table2'>
-        MESA 2
+        <p style='margin:0px' id='nombremesa2'>MESA 2</p>
+        <p style='margin:0px' id='clock2' class='timer'></p>
       </div>
       <div style='top:50%;right:5%' class="table" id='table3'>
-        MESA 3
+        <p style='margin:0px' id='nombremesa3'>MESA 3</p>
+        <p style='margin:0px' id='clock3' class='timer'></p>
       </div>
       <div style='top:50%;right:50%' class="table" id='table4'>
-        MESA 4
+        <p style='margin:0px' id='nombremesa4'>MESA 4</p>
+        <p style='margin:0px' id='clock4' class='timer'></p>
       </div>
       <div style='top:80%;right:80%' class="table" id='table5'>
-        MESA 5
+        <p style='margin:0px' id='nombremesa5'>MESA 5</p>
+        <p style='margin:0px' id='clock5' class='timer'></p>
       </div>
     </div>
     <div class="controlscontainer" id='controls'>
@@ -48,21 +56,39 @@
 <script src="./jquery-3.4.1.min.js"></script>
 
 <script type="text/javascript">
-  var opentables = [0,0,0,0,0];
+  var opentables = [0,0,1,0,0];
+  var tabletimers = [new Date(),new Date(),new Date(),new Date(),new Date()]
+  var tableintervals = new Array;
+
+  function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+
   $('#opentable').on('click', function() {
-    var tableopened = $(this).parent().find('h1').text();
+    var tableopened = $('#tablename').text();
     $('#table' + tableopened[5]).css('background-color', '#22cc22');
     opentables[tableopened[5]] = 1;
     $('#closetable').show();
     $('#opentable').fadeOut('fast');
+    tabletimers[tableopened[5]-1].setTime(0);
+    tabletimers[tableopened[5]-1].setHours(0);
+    tableintervals[tableopened[5]-1] = setInterval(function() {
+      tabletimers[tableopened[5]-1].setTime(tabletimers[tableopened[5]-1].getTime() + 1000);
+      $('#clock' + tableopened[5]).text(checkTime(tabletimers[tableopened[5]-1].getHours()) + ':' + checkTime(tabletimers[tableopened[5]-1].getMinutes()) + ':' + checkTime(tabletimers[tableopened[5]-1].getSeconds()));
+    }, 1000);
+    $('#clock' + tableopened[5]).fadeIn();
   });
+
   $('#closetable').on('click', function() {
     if (confirm('Cerrar mesa?')) {
       var tableclosed = $(this).parent().parent().find('h1').text();
-      $('#table' + tableclosed[5]).css('background-color', '#666666');
+      $('#table' + tableclosed[5]).css('background-color', '#000000');
       opentables[tableclosed[5]] = 0;
       $('#closetable').fadeOut('fast');
       $('#opentable').fadeIn('fast');
+      clearInterval(tableintervals[tableclosed[5]-1]);
+      $('#clock' + tableclosed[5]).fadeOut();
     }
   });
   $('#tables').on('click', function() {
