@@ -7,8 +7,11 @@
       body {font-family:arial;background-color: #000000}
       h1 {width:100%;color:white}
       p {text-align: center; color: white}
-      .controles {position:absolute; top:10%; width:100%; height:90%}
+      table {color: white;border: 1px solid white}
+      .controls {position:absolute; top:10%; width:100%; height:90%}
       .controlscontainer {position:fixed;right:0px;width:0%; height:100%; background-color: #111111;border:1px solid black}
+      .sumarmismoitem {text-align:center; position:absolute; right: 32%; width:5%; height: 4vh; background-color: #109010; color: white}
+      .quitarmismoitem {text-align:center;position: absolute; right: 27%;width:5%; height: 4vh; background-color: #901010; color: white}
       .table {border:0.5vh solid white;position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;vertical-align:center;line-height:5vh}
       .table:hover {cursor: pointer}
       .tablecontainer {position:fixed;left:0px;width:100%; height:100%;border:1px solid black; hover}
@@ -19,7 +22,7 @@
     </style>
   </head>
   <body>
-    <div class="tablecontainer" id='tables'>
+    <div class="tablecontainer" id='tablecontainer'>
       <div style='top:5%;right:5%' class="table" id='table1'>
         <p style='margin:0px' id='nombremesa1'>MESA 1</p>
         <p style='margin:0px' id='clock1' class='timer'></p>
@@ -41,41 +44,84 @@
         <p style='margin:0px' id='clock5' class='timer'></p>
       </div>
     </div>
-    <div class="controlscontainer" id='controls'>
+    <div class="controlscontainer" id='controlscontainer'>
       <div class="tableheader">
         <h1 id='tablename'></h1>
       </div>
       <input type="button" id='opentable' value="Abrir mesa">
-      <div class="controles">
+      <div class="controls" id='controls'>
+        <div class="orderscontainer" id="orderscontainer">
+          <select class="products" id="products">
+
+          </select>
+          <input type="button" id="addproduct" value="Añadir">
+          <table id='orderTable'>
+            <tr>
+              <th>Item</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+              <th></th>
+            </tr>
+          </table>
+        </div>
         <input type="button" id="closetable" value="Cerrar mesa">
       </div>
     </div>
   </body>
 </html>
 
-<script src="./jquery-3.4.1.min.js"></script>
+<script src="/jquery-3.4.1.min.js"></script>
 
 <script type="text/javascript">
-  var opentables = [0,0,1,0,0];
-  var tabletimers = [new Date(),new Date(),new Date(),new Date(),new Date()]
+  class TABLE {
+    constructor() {
+      this.isOpen = false;
+      this.timer = new Date(0);
+      this.isReserved = false;
+      this.reservationTime = new Date();
+      this.orders = new Array()
+    }
+  }
+  var tables = [new TABLE(),new TABLE(),new TABLE(),new TABLE(),new TABLE()];
   var tableintervals = new Array;
-
+  var products;
   function checkTime(i) {
-  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-  return i;
-}
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+  }
+
+  $.getJSON("/productos.json", function(response) {
+    var sel = $('#products');
+    products = response;
+   $.each(response, function(categoria){
+     sel.append($("<optgroup>").attr('label',categoria));
+     for (var i = 0; i<response[categoria].length; i++) {
+       sel.append($("<option>").attr('value', [response[categoria][i].valor,response[categoria][i].dbid]).text(response[categoria][i].nombre));
+     }
+   })
+  });
+
+  $('#addproduct').on('click', function() {
+    itemval = $('#products option:selected').val().split(',');
+    console.log(itemval);
+    //alterar mesa
+    //AÑADIR ITEM CON SU NOMBRE, COSTO Y BOTON DE QUITAR
+    var markup = "<tr class='" + itemval[1] + "'><td>" + $('#products option:selected').text() + "</td><td><span class='cantitem' style='color:white'>1</span><input class='sumarmismoitem' type='button' value='+'><input class='quitarmismoitem' type='button' value='-'></td><td class='monto'>" + itemval[0] + "</td><td> <input class='quitardelista' type='button' value='Quitar'></td></tr>";
+    $("#orderTable tr:last").after(markup);
+    //costo total para la mesa
+  })
 
   $('#opentable').on('click', function() {
     var tableopened = $('#tablename').text();
     $('#table' + tableopened[5]).css('background-color', '#22cc22');
-    opentables[tableopened[5]] = 1;
+    tables[tableopened[5]-1].isOpen = true;
     $('#closetable').show();
     $('#opentable').fadeOut('fast');
-    tabletimers[tableopened[5]-1].setTime(0);
-    tabletimers[tableopened[5]-1].setHours(0);
+    tables[tableopened[5]-1].timer.setTime(0);
+    tables[tableopened[5]-1].timer.setHours(0);
     tableintervals[tableopened[5]-1] = setInterval(function() {
-      tabletimers[tableopened[5]-1].setTime(tabletimers[tableopened[5]-1].getTime() + 1000);
-      $('#clock' + tableopened[5]).text(checkTime(tabletimers[tableopened[5]-1].getHours()) + ':' + checkTime(tabletimers[tableopened[5]-1].getMinutes()) + ':' + checkTime(tabletimers[tableopened[5]-1].getSeconds()));
+      tables[tableopened[5]-1].timer.setTime(tables[tableopened[5]-1].timer.getTime() + 1000);
+      $('#clock' + tableopened[5]).text(checkTime(tables[tableopened[5]-1].timer.getHours()) + ':' + checkTime(tables[tableopened[5]-1].timer.getMinutes()) + ':' + checkTime(tables[tableopened[5]-1].timer.getSeconds()));
     }, 1000);
     $('#clock' + tableopened[5]).fadeIn();
   });
@@ -84,21 +130,22 @@
     if (confirm('Cerrar mesa?')) {
       var tableclosed = $(this).parent().parent().find('h1').text();
       $('#table' + tableclosed[5]).css('background-color', '#000000');
-      opentables[tableclosed[5]] = 0;
+      tables[tableclosed[5]-1].isOpen = false;
       $('#closetable').fadeOut('fast');
       $('#opentable').fadeIn('fast');
       clearInterval(tableintervals[tableclosed[5]-1]);
       $('#clock' + tableclosed[5]).fadeOut();
     }
   });
-  $('#tables').on('click', function() {
-    $('#controls').animate({width: '0%'});
-    $('#tables').animate({width: '100%'});
+  $('#tablecontainer').on('click', function() {
+    $('#controlscontainer').animate({width: '0%'});
+    $('#tablecontainer').animate({width: '100%'});
   })
   $('.table').on('click', function(e) {
     e.stopPropagation();
     var tableclicked = $(this).attr('id');
-    if (opentables[tableclicked[5]] == 1) {
+    if (tables[tableclicked[5]-1].isOpen == true) {
+      populateOrderTable(tableclicked[5]-1);
       $('#opentable').hide();
       $('#closetable').show();
     } else {
@@ -106,8 +153,15 @@
       $('#closetable').hide();
     }
     $('#tablename').text("Mesa " + tableclicked[5]);
-    $('#controls').animate({width: '30%'});
-    $('#tables').animate({width: '70%'});
+    $('#controlscontainer').animate({width: '30%'});
+    $('#tablecontainer').animate({width: '70%'});
   });
 
+  function populateOrderTable(table) {
+    $('#orderTable').empty();
+    $('#orderTable').append("<tr><th>Item</th><th>Cantidad</th><th>Precio</th><th></th></tr>");
+    for (var i = 0; i<tables[table].orders.length; i++) {
+      $('#orderTable').append("<tr><td>" + tables[table].orders[i] + "</td><td><span class='cantitem' style='color:white'>1</span><input class='sumarmismoitem' type='button' value='+'><input class='quitarmismoitem' type='button' value='-'></td><td class='monto'>" + 5 + "</td><td> <input class='quitardelista' type='button' value='Quitar'></td></tr>");
+    }
+  }
 </script>
