@@ -71,6 +71,7 @@
 </html>
 
 <script src="/jquery-3.4.1.min.js"></script>
+<script src="http://localhost:4000/socket.io/socket.io.js"></script>
 
 <script type="text/javascript">
   class TABLE {
@@ -89,6 +90,7 @@
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
   }
+  var socket = io.connect('http://localhost:4000');
 
   $.getJSON("/productos.json", function(response) {
     var sel = $('#products');
@@ -100,7 +102,19 @@
      }
    })
   });
-
+  $.getJSON("/tables.json", function(response) {
+    for (var i = 0; i<tables.length; i++) {
+      tables[i].isOpen = response[i].isOpen;
+      tables[i].timer = new Date(response[i].timer);
+      tables[i].isReserved = response[i].isReserved;
+      tables[i].reservationTime = new Date(response[i].reservationTime);
+      tables[i].orders = response[i].orders
+      if (tables[i].isOpen == true) {
+        $('#table' + Number(i+1)).css('background-color', '#22cc22');
+        console.log("table " + Number(i+1) + ' is open');
+      }
+    }
+  });
   $('#addproduct').on('click', function() {
     itemval = $('#products option:selected').val().split(',');
     console.log(itemval);
@@ -124,6 +138,7 @@
       $('#clock' + tableopened[5]).text(checkTime(tables[tableopened[5]-1].timer.getHours()) + ':' + checkTime(tables[tableopened[5]-1].timer.getMinutes()) + ':' + checkTime(tables[tableopened[5]-1].timer.getSeconds()));
     }, 1000);
     $('#clock' + tableopened[5]).fadeIn();
+    socket.emit('tableopened', [tables, tableopened[5]]);
   });
 
   $('#closetable').on('click', function() {
@@ -135,6 +150,7 @@
       $('#opentable').fadeIn('fast');
       clearInterval(tableintervals[tableclosed[5]-1]);
       $('#clock' + tableclosed[5]).fadeOut();
+      socket.emit('tableclosed', [tables, tableclosed[5]]);
     }
   });
   $('#tablecontainer').on('click', function() {
@@ -164,4 +180,13 @@
       $('#orderTable').append("<tr><td>" + tables[table].orders[i] + "</td><td><span class='cantitem' style='color:white'>1</span><input class='sumarmismoitem' type='button' value='+'><input class='quitarmismoitem' type='button' value='-'></td><td class='monto'>" + 5 + "</td><td> <input class='quitardelista' type='button' value='Quitar'></td></tr>");
     }
   }
+
+    socket.on('tableopenedres', function(num){
+      tables[num-1].isOpen = true;
+      $('#table' + num).css('background-color', '#22cc22');
+    });
+    socket.on('tableclosedres', function(num){
+      tables[num-1].isOpen = false;
+      $('#table' + num).css('background-color', '#000000');
+    });
 </script>

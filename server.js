@@ -23,3 +23,24 @@ app.get('/jquery-3.4.1.min.js', function (req, res) {
 app.get('/productos.json', function (req, res) {
   res.sendFile(__dirname + '/productos.json');
 });
+
+app.get('/tables.json', function (req, res) {
+  res.sendFile(__dirname + '/tables.json');
+});
+
+io.on('connection', function(socket){
+  socket.on('tableopened', function(table){
+    var json = JSON.stringify(table[0]);
+    console.log('Opened table ' + table[1]);
+    fs.writeFile('tables.json', json, 'utf8', function callback(err) {
+    });
+    socket.emit('tableopenedres', table[1]);
+  });
+  socket.on('tableclosed', function(table){
+    var json = JSON.stringify(table[0]);
+    console.log('Closed table ' + table[1]);
+    fs.writeFile('tables.json', json, 'utf8', function callback(err) {
+    });
+    socket.emit('tableclosedres', table[1]);
+  });
+})
