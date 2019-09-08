@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>BarPOS</title>
+    <style>
+      h1 {width:100%;color:white}
+      .controles {position:absolute; top:10%; width:100%; height:90%}
+      .controlscontainer {position:fixed;right:0px;width:0%; height:100%; background-color: #111111;border:1px solid black}
+      .table {position:absolute;width:10vh;height:10vh;background-color: #666666; color: white;text-align: center;vertical-align:center;line-height:10vh}
+      .table:hover {cursor: pointer}
+      .tablecontainer {position:fixed;left:0px;width:100%; height:100%;border:1px solid black; hover}
+      .tableheader {position:absolute;top:0px;height:10%;width:100%;text-align:center}
+    </style>
+  </head>
+  <body>
+    <div class="tablecontainer" id='tables'>
+      <div style='top:5%;right:5%' class="table" id='table1'>
+        MESA 1
+      </div>
+      <div style='top:5%;right:50%' class="table" id='table2'>
+        MESA 2
+      </div>
+      <div style='top:50%;right:5%' class="table" id='table3'>
+        MESA 3
+      </div>
+      <div style='top:50%;right:50%' class="table" id='table4'>
+        MESA 4
+      </div>
+      <div style='top:80%;right:80%' class="table" id='table5'>
+        MESA 5
+      </div>
+    </div>
+    <div class="controlscontainer" id='controls'>
+      <div class="tableheader">
+        <h1 id='tablename'></h1>
+      </div>
+      <input style='width:100%;height:90%; position: absolute; top:10%;z-index:99' type="button" id='opentable' name="abrir" value="Abrir mesa">
+      <div class="controles">
+      </div>
+    </div>
+  </body>
+</html>
+
+<script src="./jquery-3.4.1.min.js"></script>
+
+<script type="text/javascript">
+  var opentables = [0,0,0,0,0]
+  $('#opentable').on('click', function() {
+    var tableopened = $(this).parent().parent().find('h1').text();
+    $('#' + tableopened).css('background-color', '#006600');
+    opentables[tableopened[5]] = 1;
+    $('#opentable').fadeOut();
+    console.log(opentables);
+  })
+  $('#tables').on('click', function() {
+    $('#controls').animate({width: '0%'});
+    $('#tables').animate({width: '100%'});
+  })
+  $('.table').on('click', function(e) {
+    e.stopPropagation();
+    var tableclicked = $(this).attr('id');
+    if (opentables[tableclicked[5]] == 1) {
+      $('#opentable').hide();
+    } else {
+      $('#opentable').show();
+    }
+    $('#tablename').text(tableclicked);
+    $('#controls').animate({width: '30%'});
+    $('#tables').animate({width: '70%'});
+  });
+
+</script>
