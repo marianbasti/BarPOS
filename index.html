@@ -10,11 +10,12 @@
       table {color: white;border: 1px solid white}
       .controls {position:absolute; top:10%; width:100%; height:90%}
       .controlscontainer {position:fixed;right:0px; top:0px; left:70%; height:100%; background-color: #111111;border:1px solid black; z-index:1}
-      .modalReservationTime {position: fixed; width: 100%; height: 100%; background-color: black; z-index:201}
+      .modalReservationTime {position: fixed; width: 100%; height: 100%; background-color: black; z-index:201; padding-top: 25%}
       .sumarmismoitem {text-align:center; position:absolute; right: 32%; width:5%; height: 4vh; background-color: #109010; color: white}
       .quitarmismoitem {text-align:center;position: absolute; right: 27%;width:5%; height: 4vh; background-color: #901010; color: white}
       .reserved {position:absolute; width:20px; height:20px; top:-16%; left:-16%; border-radius: 50%; background-color: #ffa200; z-index:200}
       .table {border:0.5vh solid white;position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;vertical-align:center;line-height:5vh}
+      .reservationTimecontainer {position: absolute; width:30%; height: 15%; vertical-align: middle;}
       .table:hover {cursor: pointer}
       .tablecontainer {position:fixed;top:0px;left:0px;width:100%; height:100%; z-index: 2; background-color: black}
       .tableheader {position:absolute;top:0px;height:10%;width:100%;text-align:center}
@@ -77,8 +78,15 @@
       </div>
     </div>
     <div class='modalReservationTime' id='modalReservationTime'>
-      <input type="date" id='reservationdateInput'>
-      <input type="time" id='reservationtimeInput'>
+      <div class='reservationTimecontainer'>
+        <div style='top:50%'>
+          <input type="datetime-local" id='reservationdateInput'>
+        </div>
+        <div style='width:50%; margin:0px'>
+          <input type="button" id="confirmReservation" value="Aceptar">
+          <input type="button" id="cancelReservation" value="Cancelar">
+        </div>
+      </div>
     </div>
   </body>
 </html>
@@ -86,7 +94,17 @@
 <script src="/jquery-3.4.1.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 
+
 <script type="text/javascript">
+
+
+  class Reservation {
+    constructor() {
+      this.date = new Date();
+      this.client = "";
+    }
+  }
+
   var socket = io();
   var intervals = new Array(5);
   class TABLE {
@@ -94,7 +112,7 @@
       this.isOpen = false;
       this.timer = new Date();
       this.isReserved = false;
-      this.reservationTime = new Array();
+      this.reservations = new Array();
       this.orders = new Array()
     }
   }
@@ -149,7 +167,7 @@
       tables[i].isOpen = response[i].isOpen;
       tables[i].timer = new Date(response[i].timer);
       tables[i].isReserved = response[i].isReserved;
-      tables[i].reservationTime = new Date(response[i].reservationTime);
+      tables[i].reservations = response[i].reservations;
       tables[i].orders = response[i].orders;
       if (tables[i].isOpen == true) {
         $('#table' + Number(i+1)).css('background-color', '#22cc22');
@@ -221,7 +239,23 @@
   $('#reservetable').on('click', function() {
     var mesa = $('#tablename').text()[5];
     $('#modalReservationTime').fadeIn();
+
+  })
+
+  $('#confirmReservation').on('click', function() {
+    var mesa = $('#tablename').text()[5]
+    tables[mesa].isReserved= true;
     $('#reserved' + mesa).show();
+    var newReservation = new Reservation();
+    newReservation.date.setDate(reservationdateInput);
+    console.log(tables[mesa].reservations);
+    tables[mesa].reservations.push(newReservation);
+    console.log(tables[mesa].reservations);
+
+  })
+
+  $('#cancelReservation').on('click', function() {
+    $('#modalReservationTime').fadeOut();
   })
 
   function populateOrderTable(table) {
