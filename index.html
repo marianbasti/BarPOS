@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>BarPOS</title>
     <style>
-      body {font-family:arial;background-color: #000000}
+      body {font-family:orbitron;background-color: #000000}
       h1 {width:100%;color:white}
       p {text-align: center; color: white}
       table {color: white;border: 1px solid white}
@@ -71,26 +71,49 @@
 </html>
 
 <script src="/jquery-3.4.1.min.js"></script>
-<script src="http://localhost:4000/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 
 <script type="text/javascript">
+  var socket = io();
+  var intervals = new Array(5);
   class TABLE {
     constructor() {
       this.isOpen = false;
-      this.timer = new Date(0);
+      this.timer = new Date();
       this.isReserved = false;
       this.reservationTime = new Date();
       this.orders = new Array()
     }
   }
+  Number.prototype.toFixedDown = function(digits) {
+    var n = this - Math.pow(10, -digits)/2;
+    n += n / Math.pow(2, 53); // added 1360765523: 17.56.toFixedDown(2) === "17.56"
+    return n.toFixed(digits);
+  }
+
   var tables = [new TABLE(),new TABLE(),new TABLE(),new TABLE(),new TABLE()];
-  var tableintervals = new Array;
+  var currentTime = new Date();
   var products;
   function checkTime(i) {
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
   }
-  var socket = io.connect('http://localhost:4000');
+
+  function setClock(i) {
+    intervals[i] = setInterval(function() {
+      var time = new Date(currentTime - tables[i].timer);
+      var h = checkTime(time.getHours());
+      var m = checkTime(time.getMinutes());
+      var s = checkTime(time.getSeconds());
+      $('#clock' + Number(i+1)).text(h+':'+m+':'+s);
+    },1000)
+  }
+
+  $('#clock1').hide();
+  $('#clock2').hide();
+  $('#clock3').hide();
+  $('#clock4').hide();
+  $('#clock5').hide();
 
   $.getJSON("/productos.json", function(response) {
     var sel = $('#products');
@@ -108,10 +131,12 @@
       tables[i].timer = new Date(response[i].timer);
       tables[i].isReserved = response[i].isReserved;
       tables[i].reservationTime = new Date(response[i].reservationTime);
-      tables[i].orders = response[i].orders
+      tables[i].orders = response[i].orders;
       if (tables[i].isOpen == true) {
         $('#table' + Number(i+1)).css('background-color', '#22cc22');
-        console.log("table " + Number(i+1) + ' is open');
+        $('#clock' + Number(i+1)).show();
+        setClock(i);
+        console.log("Mesa " + Number(i+1) + ' está abierta');
       }
     }
   });
@@ -131,13 +156,10 @@
     tables[tableopened[5]-1].isOpen = true;
     $('#closetable').show();
     $('#opentable').fadeOut('fast');
-    tables[tableopened[5]-1].timer.setTime(0);
-    tables[tableopened[5]-1].timer.setHours(0);
-    tableintervals[tableopened[5]-1] = setInterval(function() {
-      tables[tableopened[5]-1].timer.setTime(tables[tableopened[5]-1].timer.getTime() + 1000);
-      $('#clock' + tableopened[5]).text(checkTime(tables[tableopened[5]-1].timer.getHours()) + ':' + checkTime(tables[tableopened[5]-1].timer.getMinutes()) + ':' + checkTime(tables[tableopened[5]-1].timer.getSeconds()));
-    }, 1000);
+    tables[tableopened[5]-1].timer.setTime(currentTime);
+    setClock(tableopened[5]-1);
     $('#clock' + tableopened[5]).fadeIn();
+    console.log('Abriendo mesa '+ tableopened[5]);
     socket.emit('tableopened', [tables, tableopened[5]]);
   });
 
@@ -148,15 +170,18 @@
       tables[tableclosed[5]-1].isOpen = false;
       $('#closetable').fadeOut('fast');
       $('#opentable').fadeIn('fast');
-      clearInterval(tableintervals[tableclosed[5]-1]);
       $('#clock' + tableclosed[5]).fadeOut();
+      clearInterval(intervals[tableclosed[5]-1]);
+      console.log('Cerrando mesa '+ tableclosed[5]);
       socket.emit('tableclosed', [tables, tableclosed[5]]);
     }
   });
+
   $('#tablecontainer').on('click', function() {
     $('#controlscontainer').animate({width: '0%'});
     $('#tablecontainer').animate({width: '100%'});
   })
+
   $('.table').on('click', function(e) {
     e.stopPropagation();
     var tableclicked = $(this).attr('id');
@@ -181,12 +206,20 @@
     }
   }
 
+  setInterval(function () {
+    currentTime = new Date();
+  }, 1000)
+
+  $(function() {
     socket.on('tableopenedres', function(num){
+      console.log('Abierta mesa '+ num);
       tables[num-1].isOpen = true;
       $('#table' + num).css('background-color', '#22cc22');
     });
     socket.on('tableclosedres', function(num){
+      console.log('Cerrada mesa ' + num);
       tables[num-1].isOpen = false;
       $('#table' + num).css('background-color', '#000000');
     });
+  })
 </script>

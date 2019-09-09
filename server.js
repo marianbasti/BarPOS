@@ -34,13 +34,13 @@ io.on('connection', function(socket){
     console.log('Opened table ' + table[1]);
     fs.writeFile('tables.json', json, 'utf8', function callback(err) {
     });
-    socket.emit('tableopenedres', table[1]);
+    socket.broadcast.emit('tableopenedres', table[1]);
   });
   socket.on('tableclosed', function(table){
     var json = JSON.stringify(table[0]);
     console.log('Closed table ' + table[1]);
     fs.writeFile('tables.json', json, 'utf8', function callback(err) {
     });
-    socket.emit('tableclosedres', table[1]);
+    socket.broadcast.emit('tableclosedres', table[1]);
   });
 })
