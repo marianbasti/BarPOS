@@ -49,7 +49,7 @@ io.on('connection', function(socket){
     io.emit('tableopenedres', table[1]);
   });
   socket.on('tableclosed', function(table){
-    table[0][table[1]].orders = [];
+    table[0][table[1]-1].orders = [];
     var json = JSON.stringify(table[0]);
     console.log('Closed table ' + table[1]);
     fs.writeFile('tables.json', json, 'utf8', function callback(err) {

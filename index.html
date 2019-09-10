@@ -4,25 +4,26 @@
     <meta charset="utf-8">
     <title>BarPOS</title>
     <style>
-      body {font-family:orbitron;background-color: #000000}
+      body {font-family:orbitron;background-color: #000000;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;}
       h1 {width:100%;color:white}
       p {text-align: center; color: white}
       table, td, th, tr{color: white;border: 1px solid white; border-collapse: collapse}
+      .totaltable {position: fixed;bottom: 0px}
       .cantitem {text-align: right}
       .controls {position:absolute; top:10%; width:100%; height:90%}
       .controlscontainer {position:fixed;right:0px; top:0px; left:70%; height:100%; width:30%; background-color: #111111;border:1px solid black; z-index:1;overflow-y: auto}
       .modalReservationTime {position: fixed; width: 100%; height: 100%; background-color: black; z-index:201; padding-top: 25%}
       .monto {text-align: right;}
-      .orderscontainer {height: 96%; overflow-y: auto}
-      .sumarmismoitem {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #109010; color: white; border: 0px}
-      .quitarmismoitem {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #901010; color: white; border: 0px}
+      .orderscontainer {margin: 0px;height: 90%; overflow-y: auto}
+      .addsame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #109010; color: white; border: 0px}
+      .removesame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #901010; color: white; border: 0px}
       .reserved {position:absolute; width:20px; height:20px; top:-16%; left:-16%; border-radius: 50%; background-color: #ffa200; z-index:200}
       .table {border:0.5vh solid white;position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;vertical-align:center;line-height:5vh}
       .reservationTimecontainer {position: absolute; width:30%; height: 15%; vertical-align: middle;}
       .table:hover {cursor: pointer}
       .tablecontainer {position:fixed;top:0px;left:0px;width:100%; height:100%; z-index: 2; background-color: black}
-      .tableheader {position:absolute;top:0px;height:10%;width:100%;text-align:center}
-      #closetable {position:fixed;width:30%;height:10%;bottom:0px;background-color:#cc2222;color:white;font-size:5vh;line-height:%}
+      .tableheader {border:2px solid white;position:absolute;top:0px;height:10%;width:100%;text-align:center}
+      #closetable {position:fixed;margin:0px;width:30%;height:10%;bottom:0px;background-color:#cc2222;color:white;font-size:5vh;line-height:%}
       #opentable {width:100%; height:100%; position: absolute; top:10%;z-index:99;background-color:#22cc22;color:white;font-size:5vh}
       #orderTable {width:100%}
       #reservetable {margin: 1vh; font-size: 3vh !important; line-height:2.5vh; width:5vh; height:5vh; position: absolute;z-index:99;background-color:#ffa200;color:white;font-size:5vh; border-radius: 50%}
@@ -76,6 +77,14 @@
               <th></th>
             </tr>
           </table>
+          <table class='totaltable' id='totaltable'>
+            <tr>
+              <th>Total</th>
+              <th></th>
+              <th id='total'></th>
+              <th></th>
+            </tr>
+          </table>
         </div>
         <input type="button" id="closetable" value="Cerrar mesa">
       </div>
@@ -113,7 +122,8 @@
       this.timer = new Date();
       this.isReserved = false;
       this.reservations = new Array();
-      this.orders = new Array()
+      this.orders = new Array();
+      this.total = 0
     }
   }
 
@@ -141,11 +151,21 @@
   function setClock(i) {
     intervals[i] = setInterval(function() {
       var time = new Date(currentTime - tables[i].timer);
-      var h = checkTime(time.getHours()-21);
+      var h = checkTime(time.getHours());
       var m = checkTime(time.getMinutes());
       var s = checkTime(time.getSeconds());
       $('#clock' + Number(i+1)).text(h+':'+m+':'+s);
     },1000)
+  }
+
+  function populateOrderTable(table) {
+    $('#orderTable').empty();
+    $('#orderTable').append("<tr><th>Item</th><th>Cantidad</th><th>Precio</th><th></th></tr>");
+    for (var i = 0; i<tables[table].orders.length; i++) {
+      order = tables[table].orders[i];
+      var markup = "<tr id='o" + i + "' class='" + order[1] + "'><td>" + order[2] + "</td><td class='cantitem'>" + order[3] + "<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'></td><td class='monto'>" + order[0] + "</td><td> <input class='removeFromList' type='button' value='Quitar'></td></tr>";
+      $("#orderTable tr:last").after(markup);
+    }
   }
 
   $('#clock1').hide();
@@ -177,6 +197,7 @@
       tables[i].isReserved = response[i].isReserved;
       tables[i].reservations = response[i].reservations;
       tables[i].orders = response[i].orders;
+      tables[i].total = response[i].total;
       if (tables[i].isOpen == true) {
         $('#table' + Number(i+1)).css('background-color', '#22cc22');
         $('#clock' + Number(i+1)).show();
@@ -192,15 +213,17 @@
     var tablealtered = $('#tablename').text()[5];
     itemval = $('#products option:selected').val().split(',');
     itemval.push($('#products option:selected').text());
+    itemval.push(1);
     //alterar mesa
     tables[tablealtered-1].orders.push(itemval);
     console.log('Agregado item "' + itemval + '" a la mesa ' + Number(tablealtered));
     //AÑADIR ITEM CON SU NOMBRE, COSTO Y BOTON DE QUITAR
-    var markup = "<tr class='" + itemval[1] + "'><td>" + $('#products option:selected').text() + "</td><td class='cantitem'>1<input class='sumarmismoitem' type='button' value='+'><input class='quitarmismoitem' type='button' value='-'></td><td class='monto'>" + itemval[0] + "</td><td> <input class='removeFromList' type='button' value='Quitar'></td></tr>";
+    var markup = "<tr id='o" + tables[tablealtered-1].orders.length + "' class='" + itemval[1] + "'><td>" + $('#products option:selected').text() + "</td><td class='cantitem'>1<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'></td><td class='monto'>" + itemval[0] + "</td><td> <input class='removeFromList' type='button' value='Quitar'></td></tr>";
     $("#orderTable tr:last").after(markup);
     socket.emit('alteredorders', [tables, tablealtered]);
     //costo total para la mesa
   })
+
   $("#orderTable").on('click', '.removeFromList', function() {
     var item = $(this).parent().parent().find('td:first').text();
     var tablealtered = $('#tablename').text()[5];
@@ -213,6 +236,23 @@
     $(this).closest('tr').remove();
     socket.emit('alteredorders', [tables, tablealtered]);
   })
+  $("#orderTable").on('click', '.addsame', function(e) {
+    e.stopPropagation();
+    tables[$('#tablename').text()[5]-1].orders[$(this).closest('tr').attr('id')[1]][3]++;
+    var markup = "<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'>";
+    $(this).closest('.cantitem').html(Number($(this).closest('.cantitem').text())+1 + markup);
+    socket.emit('alteredorders', [tables, $('#tablename').text()[5]]);
+  })
+  $("#orderTable").on('click', '.removesame', function(e) {
+    e.stopPropagation();
+    var markup = "<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'>";
+    if (Number($(this).closest('.cantitem').text()) > 1 ) {
+      tables[$('#tablename').text()[5]-1].orders[$(this).closest('tr').attr('id')[1]][3]--;
+      $(this).closest('.cantitem').html(Number($(this).closest('.cantitem').text())-1 + markup);
+      socket.emit('alteredorders', [tables, $('#tablename').text()[5]]);
+    }
+  })
+
 
   $('#opentable').on('click', function() {
     var tableopened = $('#tablename').text();
@@ -251,8 +291,8 @@
     e.stopPropagation();
     var tableclicked = $(this).attr('id')[5];
     console.log(tables[tableclicked-1].orders);
-    if (tables[tableclicked-1].isOpen == true) {
       populateOrderTable(tableclicked-1);
+    if (tables[tableclicked-1].isOpen == true) {
       $('#opentable').hide();
       $('#closetable').show();
     } else {
@@ -285,16 +325,6 @@
     $('#modalReservationTime').fadeOut();
   })
 
-  function populateOrderTable(table) {
-    $('#orderTable').empty();
-    $('#orderTable').append("<tr><th>Item</th><th>Cantidad</th><th>Precio</th><th></th></tr>");
-    for (var i = 0; i<tables[table].orders.length; i++) {
-      order = tables[table].orders[i];
-      var markup = "<tr class='" + order[1] + "'><td>" + order[2] + "</td><td class='cantitem'>1<input class='sumarmismoitem' type='button' value='+'><input class='quitarmismoitem' type='button' value='-'></td><td class='monto'>" + order[0] + "</td><td> <input class='removeFromList' type='button' value='Quitar'></td></tr>";
-      $("#orderTable tr:last").after(markup);
-    }
-  }
-
   setInterval(function () {
     currentTime = new Date();
   }, 1000)
@@ -305,6 +335,10 @@
       tables[num-1].isOpen = true;
       $('#table' + num).css('background-color', '#22cc22');
       $('#clock' + num).fadeIn();
+      if ($('#tablename').text()[5] == num) {
+        $('#opentable').fadeOut('fast');
+        $('#closetable').fadeIn('fast');
+      }
       openNotification.play();
     });
     socket.on('tableclosedres', function(num){
@@ -313,12 +347,19 @@
       tables[num-1].orders = [];
       $('#table' + num).css('background-color', '#000000');
       $('#clock' + num).fadeOut();
+      if ($('#tablename').text()[5] == num) {
+        $('#opentable').fadeIn('fast');
+        $('#closetable').fadeOut('fast');
+      }
       closedNotification.play();
     });
     socket.on('alteredordersres', function(newData) {
-      console.log('Ordenes alteradas de mesa ' + newData[1]);
+      console.log('Ordenes alteradas de mesa ' + newData[0]);
       console.log('Orden ' + newData[1]);
       tables[newData[0]-1].orders = newData[1];
+      if ($('#tablename').text()[5] == newData[0]) {
+        populateOrderTable(newData[0]-1)
+      }
       orderNotification.play();
     })
   })
