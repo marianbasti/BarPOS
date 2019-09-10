@@ -249,8 +249,8 @@
     e.stopPropagation();
     var tableclicked = $(this).attr('id')[5];
     console.log(tables[tableclicked-1].orders);
-    if (tables[tableclicked-1].isOpen == true) {
       populateOrderTable(tableclicked-1);
+    if (tables[tableclicked-1].isOpen == true) {
       $('#opentable').hide();
       $('#closetable').show();
     } else {
@@ -303,6 +303,10 @@
       tables[num-1].isOpen = true;
       $('#table' + num).css('background-color', '#22cc22');
       $('#clock' + num).fadeIn();
+      if ($('#tablename').text()[5] == num) {
+        $('#opentable').fadeOut('fast');
+        $('#closetable').fadeIn('fast');
+      }
       openNotification.play();
     });
     socket.on('tableclosedres', function(num){
@@ -311,12 +315,19 @@
       tables[num-1].orders = [];
       $('#table' + num).css('background-color', '#000000');
       $('#clock' + num).fadeOut();
+      if ($('#tablename').text()[5] == num) {
+        $('#opentable').fadeIn('fast');
+        $('#closetable').fadeOut('fast');
+      }
       closedNotification.play();
     });
     socket.on('alteredordersres', function(newData) {
-      console.log('Ordenes alteradas de mesa ' + newData[1]);
+      console.log('Ordenes alteradas de mesa ' + newData[0]);
       console.log('Orden ' + newData[1]);
       tables[newData[0]-1].orders = newData[1];
+      if ($('#tablename').text()[5] == newData[0]) {
+        populateOrderTable(newData[0]-1)
+      }
       orderNotification.play();
     })
   })
