@@ -47,6 +47,7 @@
       <div class="leftPanel" id='leftPanel'>
         <input type="button" id="resetTablesOrders" value="Limpiar TODAS las mesas">
         <input type="button" id="resetTablesReservations" value="Limpiar TODAS las reservas">
+        <input type="button" id="CloseAllTables" value="Cerrar TODAS las mesas">
       </div>
       <div style='top:5%;right:5%' class="table" id='table1'>
         <div class='reserved' id='reserved1'></div>
@@ -181,7 +182,6 @@
     console.log('Borrando todas las ordenes...');
     socket.emit('resetTablesOrders', [tables,1]);
   })
-
   $('#resetTablesReservations').on('click', function(){
     for (var i = 0; i<tables.length; i++){
       tables[i].reservations = [];
@@ -189,6 +189,14 @@
     }
     console.log('Borrando todas las reservas...');
     socket.emit('resetTablesReservations', [tables,1]);
+  })
+  $('#CloseAllTables').on('click', function(){
+    for (var i = 0; i<tables.length; i++){
+      tables[i].orders = [];
+      tables[i].isOpen = false;
+    }
+    console.log('Borrando todas las reservas...');
+    socket.emit('closeAllTables', [tables,1]);
   })
 
   function setClock(i) {
@@ -479,5 +487,17 @@
       }
       resetNotification.play();
     })
+    socket.on('closeAllTablesRes', function(){
+      console.log('Se han cerrado todas las mesas');
+      for (var i = 0; i<tables.length; i++){
+        tables[i].orders = [];
+        tables[i].isOpen = false;
+        $('#table' + Number(i+1)).css('background-color', '#000000');
+        $('#clock' + Number(i+1)).fadeOut();
+      }
+      $('#opentable').fadeIn('fast');
+      $('#closetable').fadeOut('fast');
+      resetNotification.play();
+    });
   })
 </script>

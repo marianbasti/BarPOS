@@ -99,4 +99,11 @@ io.on('connection', function(socket){
     });
     io.emit('resetTablesReservationsRes', true);
   });
+  socket.on('closeAllTables', function(table){
+    var json = JSON.stringify(table[0]);
+    console.log('Closing all tables');
+    fs.writeFile('tables.json', json, 'utf8', function callback(err) {
+    });
+    io.emit('closeAllTablesRes', true);
+  });
 })
