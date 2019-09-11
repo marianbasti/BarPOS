@@ -116,7 +116,7 @@
         <div id='reservationParameters' style='top:50%'>
           <input class='reservationParameters' type="text" id='reservationclient' placeholder="Nombre del cliente">
           <input class='reservationParameters' type="datetime-local" id='reservationdateInput'>
-          <input class='reservationParameters' type="number" id="partyOfReservation" placeholder="Cantidad de comensales">
+          <input class='reservationParameters' type="number" id="partyOfReservation" value='1' min="1" placeholder="Cantidad de comensales">
         </div>
         <input type="button" id="confirmReservation" value="Aceptar">
       </div>
@@ -401,19 +401,23 @@
     var party = $('#partyOfReservation').val();
     var newReservation = new Reservation();
     var forDate = new Date();
-    tables[mesa-1].isReserved= true;
-    forDate.setMinutes(unfDate.split(':')[1]);
-    forDate.setHours(unfDate.split('T')[1].split(':')[0]);
-    forDate.setDate(unfDate.split('-')[1]);
-    forDate.setMonth(unfDate.split('-')[2].split('T')[0]);
-    forDate.setYear(unfDate.split('-')[0]);
-    //newReservation.date.setDate(unfDate);
-    newReservation.date= forDate;
-    newReservation.client = client;
-    newReservation.partyOf = party;
-    tables[mesa-1].reservations.push(newReservation);
-    socket.emit('alteredreserv', [tables, mesa]);
-    $('#modalReservationTime').fadeOut();
+    if (unfDate == '' || party == 0 || client == '') {
+      alert('Revisar datos!');
+    } else {
+      tables[mesa-1].isReserved= true;
+      forDate.setMinutes(unfDate.split(':')[1]);
+      forDate.setHours(unfDate.split('T')[1].split(':')[0]);
+      forDate.setDate(unfDate.split('-')[1]);
+      forDate.setMonth(unfDate.split('-')[2].split('T')[0]);
+      forDate.setYear(unfDate.split('-')[0]);
+      //newReservation.date.setDate(unfDate);
+      newReservation.date= forDate;
+      newReservation.client = client;
+      newReservation.partyOf = party;
+      tables[mesa-1].reservations.push(newReservation);
+      socket.emit('alteredreserv', [tables, mesa]);
+      $('#modalReservationTime').fadeOut();
+    }
   })
   $('#listReservations').on('click', function() {
       $('#modalCalendar').fadeIn();
