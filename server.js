@@ -40,7 +40,14 @@ app.get('/closed.mp3', function (req, res) {
   res.sendFile(__dirname + '/closed.mp3');
 });
 
+app.get('/reset.mp3', function (req, res) {
+  res.sendFile(__dirname + '/reset.mp3');
+});
+
 io.on('connection', function(socket){
+  socket.on('ping', function(table){
+    io.emit('pong', true);
+  });
   socket.on('tableopened', function(table){
     var json = JSON.stringify(table[0]);
     console.log('Opened table ' + table[1]);
@@ -63,5 +70,29 @@ io.on('connection', function(socket){
     fs.writeFile('tables.json', json, 'utf8', function callback(err) {
     });
     io.emit('alteredordersres', [table[1],table[0][table[1]-1].orders]);
+  });
+  socket.on('alteredreserv', function(table){
+    var json = JSON.stringify(table[0]);
+    var ult = table[0][table[1]-1].reservations.length;
+    console.log('Table reserved: ' + table[1]);
+    console.log('A nombre de  ' + table[0][table[1]-1].reservations[ult-1].client);
+    console.log('Time: ' + table[0][table[1]-1].reservations[ult-1].date);
+    fs.writeFile('tables.json', json, 'utf8', function callback(err) {
+    });
+    io.emit('alteredreservres', [table[1],table[0][table[1]-1]]);
+  });
+  socket.on('resetTablesOrders', function(table){
+    var json = JSON.stringify(table[0]);
+    console.log('Clearing all table orders');
+    fs.writeFile('tables.json', json, 'utf8', function callback(err) {
+    });
+    io.emit('resetTablesOrdersRes', true);
+  });
+  socket.on('resetTablesReservations', function(table){
+    var json = JSON.stringify(table[0]);
+    console.log('Clearing all table reservations');
+    fs.writeFile('tables.json', json, 'utf8', function callback(err) {
+    });
+    io.emit('resetTablesReservationsRes', true);
   });
 })

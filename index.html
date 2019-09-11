@@ -4,33 +4,48 @@
     <meta charset="utf-8">
     <title>BarPOS</title>
     <style>
-      body {font-family:orbitron;background-color: #000000;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;}
+      body {font-family:calibri;background-color: #000000;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;}
       h1 {width:100%;color:white}
       p {text-align: center; color: white}
-      table, td, th, tr{color: white;border: 1px solid white; border-collapse: collapse}
-      .totaltable {position: fixed;bottom: 0px}
+      select {background-color: black; color: white; height:100%}
+      select option:nth-child(odd) {background-color: #030303;}
+      select optgroup {background-color: #222222; font-size: 3vh}
+      table, td, th, tr{color: white;border: 1px solid black; border-collapse: collapse}
+      .addcontrols {position: absolute; bottom: 0px; width:100%; height:6%; display: flex; align-items: center; flex-direction: row;}
+      .totaltable {}
       .cantitem {text-align: right}
       .controls {position:absolute; top:10%; width:100%; height:90%}
-      .controlscontainer {position:fixed;right:0px; top:0px; left:70%; height:100%; width:30%; background-color: #111111;border:1px solid black; z-index:1;overflow-y: auto}
-      .modalReservationTime {position: fixed; width: 100%; height: 100%; background-color: black; z-index:201; padding-top: 25%}
+      .controlscontainer {position:absolute;right:0px; top:0px; left:70%; height:90%; width:30%; border-radius: 2%;background-color: #222233;border:1px solid black; z-index:1;overflow-y: auto}
+      .modalReservationTime {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       .monto {text-align: right;}
       .orderscontainer {margin: 0px;height: 90%; overflow-y: auto}
-      .addsame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #109010; color: white; border: 0px}
+      .products {width:80% }
+      .addsame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; color: white; border: 0px; background-color: #00cc00}
       .removesame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #901010; color: white; border: 0px}
+      .reservationControls {font-size: 3vh !important; line-height:2.5vh; width:10vh; height:10%; position: absolute;background-color:rgba(0,0,0,0);color:white;font-size:5vh; border-radius: 0}
       .reserved {position:absolute; width:20px; height:20px; top:-16%; left:-16%; border-radius: 50%; background-color: #ffa200; z-index:200}
-      .table {border:0.5vh solid white;position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;vertical-align:center;line-height:5vh}
-      .reservationTimecontainer {position: absolute; width:30%; height: 15%; vertical-align: middle;}
+      .table {border:0.5vh solid white;border-radius: 7%; position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;vertical-align:center;line-height:5vh}
+      .reservationParameters {width: 100%;height;30%}
+      .reservationTimecontainer {position: absolute; width:30%; height: 20%; display: flex; align-items: center; justify-content: center; flex-direction: column;}
       .table:hover {cursor: pointer}
       .tablecontainer {position:fixed;top:0px;left:0px;width:100%; height:100%; z-index: 2; background-color: black}
-      .tableheader {border:2px solid white;position:absolute;top:0px;height:10%;width:100%;text-align:center}
-      #closetable {position:fixed;margin:0px;width:30%;height:10%;bottom:0px;background-color:#cc2222;color:white;font-size:5vh;line-height:%}
-      #opentable {width:100%; height:100%; position: absolute; top:10%;z-index:99;background-color:#22cc22;color:white;font-size:5vh}
+      .tableheader {position:absolute;top:0px;height:10%;width:100%;text-align:center}
+      .totaltable{ width:100%}
+      #addproduct {height: :100%; background-color: #ffeb38}
+      #closetable {position:fixed;padding: 0px; margin:0px;width:30%;height:10%;bottom:0px;background-color:#cc2222;color:white;font-size:5vh;border-radius: 5%}
+      #listReservations {position:absolute;; height: 2.5vh;top:6%}
+      #opentable {width:30%; height:100%; position: fixed; top:15%;z-index:99;background-color:#22cc22;color:white;font-size:5vh}
       #orderTable {width:100%}
       #reservetable {margin: 1vh; font-size: 3vh !important; line-height:2.5vh; width:5vh; height:5vh; position: absolute;z-index:99;background-color:#ffa200;color:white;font-size:5vh; border-radius: 50%}
+      #reservationParameters {height:75%;display: flex; align-items: center; justify-content: center; flex-direction: column}
     </style>
   </head>
   <body>
     <div class="tablecontainer" id='tablecontainer'>
+      <div class="leftPanel" id='leftPanel'>
+        <input type="button" id="resetTablesOrders" value="Limpiar TODAS las mesas">
+        <input type="button" id="resetTablesReservations" value="Limpiar TODAS las reservas">
+      </div>
       <div style='top:5%;right:5%' class="table" id='table1'>
         <div class='reserved' id='reserved1'></div>
         <p style='margin:0px' id='nombremesa1'>MESA 1</p>
@@ -61,14 +76,18 @@
       <div class="tableheader">
         <h1 id='tablename'></h1>
       </div>
-      <input type="button" id='opentable' value="Abrir mesa">
-      <input type="button" id='reservetable' value="R">
+      <div class="reservationControls">
+        <input type="button" id='opentable' value="Abrir mesa">
+        <input type="button" id='reservetable' value="R">
+      </div>
+      <input type="button" id='listReservations' value="Ver reservas">
       <div class="controls" id='controls'>
         <div class="orderscontainer" id="orderscontainer">
-          <select class="products" id="products">
-
-          </select>
-          <input type="button" id="addproduct" value="Añadir">
+          <div class="addcontrols">
+            <select class="products" id="products">
+            </select>
+            <input type="button" id="addproduct" value="Añadir">
+          </div>
           <table id='orderTable'>
             <tr>
               <th>Item</th>
@@ -79,9 +98,9 @@
           </table>
           <table class='totaltable' id='totaltable'>
             <tr>
-              <th>Total</th>
+              <th id=>Total</th>
               <th></th>
-              <th id='total'></th>
+              <th id='total'> </th>
               <th></th>
             </tr>
           </table>
@@ -91,12 +110,11 @@
     </div>
     <div class='modalReservationTime' id='modalReservationTime'>
       <div class='reservationTimecontainer'>
-        <div style='top:50%'>
-          <input type="datetime-local" id='reservationdateInput'>
-        </div>
-        <div style='width:50%; margin:0px'>
+        <div id='reservationParameters' style='top:50%'>
+          <input class='reservationParameters' type="text" id='reservationclient' placeholder="Nombre del cliente">
+          <input class='reservationParameters' type="datetime-local" id='reservationdateInput'>
+          <input class='reservationParameters' type="number" id="partyOfReservation" placeholder="Cantidad de comensales">
           <input type="button" id="confirmReservation" value="Aceptar">
-          <input type="button" id="cancelReservation" value="Cancelar">
         </div>
       </div>
     </div>
@@ -114,6 +132,7 @@
     constructor() {
       this.date = new Date();
       this.client = "";
+      this.partyOf = 0;
     }
   }
   class TABLE {
@@ -121,7 +140,7 @@
       this.isOpen = false;
       this.timer = new Date();
       this.isReserved = false;
-      this.reservations = new Array();
+      this.reservations = [];
       this.orders = new Array();
       this.total = 0
     }
@@ -134,6 +153,7 @@
   //Provided under a Creative Commons Attribution license https://creativecommons.org/licenses/by/4.0/legalcode
   var openNotification = new Audio('/open.mp3');
   var closedNotification = new Audio('/closed.mp3');
+  var resetNotification =new Audio('/reset.mp3');
   Number.prototype.toFixedDown = function(digits) {
     var n = this - Math.pow(10, -digits)/2;
     n += n / Math.pow(2, 53); // added 1360765523: 17.56.toFixedDown(2) === "17.56"
@@ -147,6 +167,24 @@
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
   }
+
+  //socket.emit('alteredorders',[tables,1]);
+  $('#resetTablesOrders').on('click', function(){
+    for (var i = 0; i<tables.length; i++){
+      tables[i].orders = [];
+    }
+    console.log('Borrando todas las ordenes...');
+    socket.emit('resetTablesOrders', [tables,1]);
+  })
+
+  $('#resetTablesReservations').on('click', function(){
+    for (var i = 0; i<tables.length; i++){
+      tables[i].reservations = [];
+      tables[i].isReserved = false;
+    }
+    console.log('Borrando todas las reservas...');
+    socket.emit('resetTablesReservations', [tables,1]);
+  })
 
   function setClock(i) {
     intervals[i] = setInterval(function() {
@@ -303,25 +341,42 @@
     $('#tablecontainer').animate({width: '70%'});
   });
 
+
   $('#reservetable').on('click', function() {
     var mesa = $('#tablename').text()[5];
     $('#modalReservationTime').fadeIn();
 
   })
-
-  $('#confirmReservation').on('click', function() {
-    var mesa = $('#tablename').text()[5]
-    tables[mesa].isReserved= true;
-    $('#reserved' + mesa).show();
-    var newReservation = new Reservation();
-    newReservation.date.setDate(reservationdateInput);
-    console.log(tables[mesa].reservations);
-    tables[mesa].reservations.push(newReservation);
-    console.log(tables[mesa].reservations);
-
+  $('#modalReservationTime').on('click', function() {
+    $('#modalReservationTime').fadeOut()
+    $('#reservationclient').val('');
+    $('#reservationdateInput').val('');
+    $('#partyOfReservation').val('');
   })
-
-  $('#cancelReservation').on('click', function() {
+  $('#reservationParameters').on('click', function(e) {
+    e.stopPropagation();
+  })
+  $('#confirmReservation').on('click', function(e) {
+    e.stopPropagation();
+    var mesa = $('#tablename').text()[5];
+    var client = $('#reservationclient').val();
+    var unfDate = $('#reservationdateInput').val();
+    var party = $('#partyOfReservation').val();
+    var newReservation = new Reservation();
+    var forDate = new Date();
+    tables[mesa-1].isReserved= true;
+    $('#reserved' + mesa).show();
+    forDate.setMinutes(unfDate.split(':')[1]);
+    forDate.setHours(unfDate.split('T')[1].split(':')[0]);
+    forDate.setDate(unfDate.split('-')[1]);
+    forDate.setMonth(unfDate.split('-')[2].split('T')[0]);
+    forDate.setYear(unfDate.split('-')[0]);
+    //newReservation.date.setDate(unfDate);
+    newReservation.date= forDate;
+    newReservation.client = client;
+    newReservation.partyOf = party;
+    tables[mesa-1].reservations.push(newReservation);
+    socket.emit('alteredreserv', [tables, mesa]);
     $('#modalReservationTime').fadeOut();
   })
 
@@ -330,6 +385,9 @@
   }, 1000)
 
   $(function() {
+    socket.on('pong', function() {
+      console.log('Pong');
+    })
     socket.on('tableopenedres', function(num){
       console.log('Mesa '+ num + ' abierta');
       tables[num-1].isOpen = true;
@@ -361,6 +419,29 @@
         populateOrderTable(newData[0]-1)
       }
       orderNotification.play();
+    })
+    socket.on('alteredreservres', function(newData) {
+      console.log('Se reservo la mesa ' + newData[0]);
+      console.log(newData[1].reservations);
+      tables[newData[0]-1].reservations = newData[1];
+      if(newData[1].isReserved == true) {
+        tables[newData[0]-1].isReserved = true;
+        $('#reserved' + newData[0]).fadeIn('fast');
+      } else {
+        $('#reserved' + newData[0]).fadeOut('fast');
+      }
+      orderNotification.play();
+    })
+    socket.on('resetTablesOrdersRes', function(newData) {
+      console.log('Se borraron todos los pedidos de las mesas');
+      resetNotification.play();
+    })
+    socket.on('resetTablesReservationsRes', function(newData) {
+      console.log('Se borraron todos las reservas de las mesas');
+      for (var i = 0; i<tables.length; i++){
+        $('#reserved' + Number(i+1)).fadeOut();
+      }
+      resetNotification.play();
     })
   })
 </script>
