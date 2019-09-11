@@ -44,6 +44,10 @@ app.get('/reset.mp3', function (req, res) {
   res.sendFile(__dirname + '/reset.mp3');
 });
 
+app.get('/calendar.html', function (req, res) {
+  res.sendFile(__dirname + '/calendar.html');
+});
+
 io.on('connection', function(socket){
   socket.on('ping', function(table){
     io.emit('pong', true);
