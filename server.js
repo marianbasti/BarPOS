@@ -48,6 +48,10 @@ app.get('/calendar.html', function (req, res) {
   res.sendFile(__dirname + '/calendar.html');
 });
 
+app.get('/calendar.svg', function (req, res) {
+  res.sendFile(__dirname + '/calendar.svg');
+});
+
 io.on('connection', function(socket){
   socket.on('ping', function(table){
     io.emit('pong', true);

@@ -5,7 +5,7 @@
     <title>BarPOS</title>
     <style>
       body {font-family:calibri;background-color: #000000;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;}
-      h1 {width:100%;color:white}
+      h1 {width:100%;color:white; margin:0}
       p {text-align: center; color: white}
       select {background-color: black; color: white; height:100%}
       select option:nth-child(odd) {background-color: #030303;}
@@ -35,8 +35,8 @@
       #addproduct {height: :100%; background-color: #ffeb38}
       #closetable {position:fixed;padding: 0px; margin:0px;width:30%;height:10%;bottom:0px;background-color:#cc2222;color:white;font-size:5vh;border-radius: 5%}
       #confirmReservation { position: absolute;left:-2px;bottom: 0; width:101%; height:20%}
-      #listReservations {position:absolute; height: 2.5vh;bottom:5px}
-      #opentable {width:30%; height:100%; position: fixed; top:15%;z-index:99;background-color:#22cc22;color:white;font-size:5vh}
+      #listReservations {position:absolute; height: 2.5vh;bottom:5px; right: 5px}
+      #opentable {width:30%; height:100%; position: fixed; top:10%;z-index:99;background-color:#22cc22;color:white;font-size:5vh}
       #orderTable {width:100%}
       #reservetable {margin: 5px; font-size: 3vh !important; line-height:2.5vh; width:5vh; height:5vh; position: absolute;right: 0;z-index:99;background-color:#ffa200;color:white;font-size:5vh; border-radius: 30%}
       #reservationParameters {height:75%; width:96%;display: flex; align-items: center; justify-content: center; flex-direction: column}
@@ -82,7 +82,7 @@
       <input type="button" id='opentable' value="Abrir mesa">
       <div class="reservationControls">
         <input type="button" id='reservetable' value="R">
-        <input type="button" id='listReservations' value="Ver reservas">
+        <input type="image" id='listReservations' src='calendar.svg'>
       </div>
       <div class="controls" id='controls'>
         <div class="orderscontainer" id="orderscontainer">
@@ -173,7 +173,6 @@
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
   }
-
   //socket.emit('alteredorders',[tables,1]);
   $('#resetTablesOrders').on('click', function(){
     for (var i = 0; i<tables.length; i++){
