@@ -24,6 +24,10 @@ app.get('/productos.json', function (req, res) {
   res.sendFile(__dirname + '/productos.json');
 });
 
+app.get('/mozos.json', function (req, res) {
+  res.sendFile(__dirname + '/mozos.json');
+});
+
 app.get('/tables.json', function (req, res) {
   res.sendFile(__dirname + '/tables.json');
 });
@@ -49,7 +53,23 @@ app.get('/calendar.html', function (req, res) {
 });
 
 app.get('/calendar.svg', function (req, res) {
-  res.sendFile(__dirname + '/calendar.svg');
+  res.sendFile(__dirname + '/calendar.png');
+});
+
+app.get('/calendar-clear.png', function (req, res) {
+  res.sendFile(__dirname + '/calendar-clear.png');
+});
+
+app.get('/config.png', function (req, res) {
+  res.sendFile(__dirname + '/config.png');
+});
+
+app.get('/clean.png', function (req, res) {
+  res.sendFile(__dirname + '/clean.png');
+});
+
+app.get('/close.png', function (req, res) {
+  res.sendFile(__dirname + '/close.png');
 });
 
 io.on('connection', function(socket){
