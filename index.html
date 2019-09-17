@@ -16,11 +16,13 @@
       .cantitem {text-align: right}
       .controls {position:absolute; top:10%; width:100%; height:90%}
       .controlscontainer {position:absolute;right:0px; top:0px; left:69.5%; height:90%; width:30%;background-color: #222233;border:1px solid black; z-index:1;overflow-y: auto}
-      .leftPanel {position:absolute;width: 7%; height: 100%;z-index:3; left:0%; top:10%; }
+      .leftPanel {position:absolute;width: 6vh; height: 100%;z-index:3; left:7px; top:11%; }
       .modalReservationTime {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       #modalCalendar {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
+      .modalWaiter {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       .monto {text-align: right;}
       .orderscontainer {margin: 0px;height: 90%; overflow-y: auto}
+      .preloader {display: flex; align-items: center; justify-content: center; flex-direction: column;position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: black; z-index:1000}
       .products {width:85% }
       .addsame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; color: white; border: 0px; background-color: #00cc00}
       .removesame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #901010; color: white; border: 0px}
@@ -35,36 +37,37 @@
       .totaltable{ width:100%}
       #addproduct {height: 100%; width:15%; background-color: #ffeb38; border-radius: 0px}
       #closetable {position:fixed;padding: 0px; margin:0px;width:30%;height:10%;bottom:0px;background-color:#cc2222;color:white;font-size:5vh;border-radius: 5%}
-      #CloseAllTables {width: 100%}
-      #configTableButton {width: 10%; margin: 5px}
+      #CloseAllTables {position: absolute;top:14%;width: 100%}
+      #configTableButton {width: 10%; margin: 5px;}
       #configTableModal {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       #confirmReservation { position: absolute;left:-2px;bottom: 0; width:101%; height:20%}
-      #leftPanelButton {margin: 7px;width: 5%}
+      #leftPanelButton {margin: 7px;width: 6vh}
       #leftPanelButton:focus {outline: none;}
-      #leftPanelDetail { pointer-events: none;position: absolute;left:120%;top:0%;width:500%;height: inherit;}
-      #listReservations {width:100%}
+      #listReservations {position: absolute;top:21%;width:100%}
+      #modalWaiterContainer {overflow: hidden;border: 2px solid white;border-radius: 10%;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       #opentable {width:30%; height:100%; position: fixed; top:8%;z-index:99;background-color:#22cc22;color:white;font-size:5vh}
       #orderTable {width:100%}
-      #resetTablesOrders {width: 100%}
-      #resetTablesReservations {width: 100%}
+      #resetTablesOrders {position: absolute;top: 0;width: 100%}
+      #resetTablesReservations {position: absolute;top:7%;width: 100%}
       #reservetable {margin: 5px; font-size: 3vh !important; line-height:2.5vh; width:5vh; height:5vh; position: absolute;right: 0;z-index:99;background-color:#ffa200;color:white;font-size:5vh; border-radius: 30%}
       #reservationParameters {height:75%; width:96%;display: flex; align-items: center; justify-content: center; flex-direction: column}
-    </style>
+      #waiterLogin {margin-bottom: 0;border: 0px;width: 101%; bottom: 0}
+  </style>
   </head>
   <body>
+    <div class="preloader"><img src="/preloader.svg" alt="Cargando..."></div>
     <div class="tablecontainer" id='tablecontainer'>
       <input type="image" id='leftPanelButton' src='config.png'>
       <div class="leftPanel" id='leftPanel'>
           <input type="image" id="resetTablesOrders" src="/clean.png">
+          <p id='leftPanelDetailCleanOrders' style='text-align: left;position:absolute;top:0;left:110%;width:500%'>Limpiar ordenes de las mesas</p>
           <input type="image" id="resetTablesReservations" src="/calendar-clear.png">
+          <p id='leftPanelDetailCleanreservations' style='text-align: left;position:absolute;top:7%;left:110%;width:500%'>Limpiar reservas</p>
           <input type="image" id="CloseAllTables" src="/close.png">
+          <p id='leftPanelDetailCloseTables' style='text-align: left;position:absolute;top:14%;left:110%;width:500%'>Cerrar todas las mesas</p>
           <input type="image" id='listReservations' src='calendar.svg'>
-          <div id="leftPanelDetail">
-            <p id='leftPanelDetailCleanOrders' style='text-align: left;position:absolute;top:0'>Limpiar ordenes de las mesas</p>
-            <p id='leftPanelDetailCleanreservations' style='text-align: left;position:absolute;top:11%'>Limpiar reservas</p>
-            <p id='leftPanelDetailCloseTables' style='text-align: left;position:absolute;top:21%'>Cerrar todas las mesas</p>
-            <p id='leftPanelDetailListReservations' style='text-align: left;position:absolute;top:30%'>Reservas</p>
-          </div>
+          <p id='leftPanelDetailListReservations' style='text-align: left;position:absolute;top:21%;left:110%;width:500%'>Reservas</p>
+
         </div>
       <div style='top:5%;right:5%' class="table" id='table1'>
         <div class='reserved' id='reserved1'></div>
@@ -98,6 +101,7 @@
       <input type="image" id='configTableButton' src="config.png">
       <div class="tableheader">
         <h1 id='tablename'></h1>
+        <p style='margin:0' id='thisTableWaiter'></p>
       </div>
       <div class="controls" id='controls'>
         <input type="number" id="partyOf" value="1" min='1'>
@@ -125,6 +129,14 @@
           </table>
         </div>
         <input type="button" id="closetable" value="Cerrar mesa">
+      </div>
+    </div>
+    <div id="modalWaiter" class='modalWaiter'>
+      <div id="modalWaiterContainer">
+        <p style='margin: 3%'>Quien atiende?</p>
+        <select id="waiters"></select>
+        <input type="number" id="waiterPIN" style='margin:5px' placeholder="PIN">
+        <input type="button" id="waiterLogin" value="Ingresar">
       </div>
     </div>
     <div class="configTableModal" id='configTableModal'>
@@ -159,7 +171,6 @@
 
 <script type="text/javascript">
 
-
   class Reservation {
     constructor() {
       this.date = new Date();
@@ -175,7 +186,7 @@
       this.isReserved = false;
       this.reservations = [];
       this.orders = new Array();
-      this.partyOf = 0;
+      this.partyOf = 1;
       this.paymentMethod = "";
       this.discount = 0;
       this.total = 0
@@ -205,6 +216,8 @@
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
   }
+
+
 
   //RESET ALL TABLES
   //socket.emit('alteredorders',[tables,1]);
@@ -256,7 +269,6 @@
   }
 
   function computeTotal() {
-    console.log('comp');
     var total = 0;
     $('tr').each(function() {
       total = total + (Number($(this).find('.monto').text()) * Number($(this).find('.cantitem').text()));
@@ -288,6 +300,7 @@
     })
   })
 
+  //BASES DE DATOS
   $.getJSON("/productos.json", function(response) {
     var sel = $('#products');
     products = response;
@@ -299,14 +312,10 @@
    })
   });
   $.getJSON("/mozos.json", function(response) {
-    var sel = $('#mozos');
-    products = response;
-   $.each(response, function(categoria){
-     sel.append($("<optgroup>").attr('label',categoria));
-     for (var i = 0; i<response[categoria].length; i++) {
-       sel.append($("<option>").attr('value', [response[categoria][i].valor,response[categoria][i].dbid]).text(response[categoria][i].nombre));
-     }
-   })
+    var sel = $('#waiters');
+    for (var i = 0; i<response.length; i++) {
+      sel.append($("<option>").attr('value', response[i].nombre).text(response[i].nombre));
+    }
   });
   $.getJSON("/tables.json", function(response) {
     for (var i = 0; i<tables.length; i++) {
@@ -314,6 +323,7 @@
       tables[i].timer = new Date(response[i].timer);
       tables[i].isReserved = response[i].isReserved;
       tables[i].reservations = response[i].reservations;
+      tables[i].waiter = response[i].waiter;
       tables[i].orders = response[i].orders;
       tables[i].total = response[i].total;
       if (tables[i].isOpen == true) {
@@ -328,6 +338,7 @@
     }
   });
 
+  //FUNCIONES DE LAS MESAS
   $('#addproduct').on('click', function() {
     var tablealtered = $('#tablename').text()[5];
     itemval = $('#products option:selected').val().split(',');
@@ -394,7 +405,7 @@
     setClock(tableopened[5]-1);
     $('#clock' + tableopened[5]).fadeIn();
     console.log('Abriendo mesa '+ tableopened[5]);
-    socket.emit('tableopened', [tables, tableopened[5]]);
+    socket.emit('tableopened', [tables, tableopened[5], tables[tableopened[5]-1].waiter]);
   });
 
   $('#closetable').on('click', function() {
@@ -407,6 +418,7 @@
       populateOrderTable(tableclosed-1)
       $('#closetable').fadeOut('fast');
       $('#opentable').fadeIn('fast');
+      $('#thisTableWaiter').text('');
       $('#clock' + tableclosed).fadeOut();
       $('#clock' + tableclosed).text('00:00:00')
       clearInterval(intervals[tableclosed-1]);
@@ -433,6 +445,7 @@
     );
   })
 
+  //RELLENO LOS DATOS DE LA MESA QUE CLIQUEE
   $('.table').on('click', function(e) {
     e.stopPropagation();
     var tableclicked = $(this).attr('id')[5];
@@ -443,9 +456,11 @@
       $('#closetable').show();
       $("#partyOf").val(tables[tableclicked-1].partyOf);
       $('#total').text(computeTotal());
+      $('#thisTableWaiter').text('Atiende: ' + tables[tableclicked-1].waiter);
     } else {
       $('#opentable').show();
       $('#closetable').hide();
+      $('#thisTableWaiter').text('');
     }
     $('#tablename').text("Mesa " + tableclicked);
     $('#tablecontainer').animate({width: '69.5%'});
@@ -551,18 +566,39 @@
     }
   );
 
+  $('#waiterLogin').on('click', function(){
+    //VALIDATE PIN
+    var pin = $('#waiterPIN').val();
+    var waiter = $('#waiters').val();
+    socket.emit('login', [waiter,pin])
+    $('#modalWaiter').fadeOut();
+  })
+
+  $(document).ready(function() {$('.preloader').fadeOut()})
+
   $(function() {
     socket.on('pong', function() {
       console.log('Pong');
     })
-    socket.on('tableopenedres', function(num){
-      console.log('Mesa '+ num + ' abierta');
-      tables[num-1].isOpen = true;
-      $('#table' + num).css('background-color', '#22cc22');
-      $('#clock' + num).fadeIn();
-      if ($('#tablename').text()[5] == num) {
+    socket.on('logResponse', function(res) {
+      if (res == true) {
+        currentWaiter = $('#waiters').val();
+      } else {
+        alert('PIN incorrecto!');
+        window.location.reload();
+      }
+    })
+    socket.on('tableopenedres', function(table){
+      console.log('Mesa '+ table[0] + ' abierta');
+      tables[table[0]-1].isOpen = true;
+      tables[table[0]-1].waiter = table[1];
+      $('#table' + table[0]).css('background-color', '#22cc22');
+      $('#clock' + table[0]).fadeIn();
+      if ($('#tablename').text()[5] == table[0]) {
         $('#opentable').fadeOut('fast');
         $('#closetable').fadeIn('fast');
+        console.log(table[1]);
+        $('#thisTableWaiter').text('Atiende: ' + table[1]);
       }
       openNotification.play();
     });
@@ -575,6 +611,7 @@
       if ($('#tablename').text()[5] == num) {
         $('#opentable').fadeIn('fast');
         $('#closetable').fadeOut('fast');
+        $('#thisTableWaiter').text('');
       }
       closedNotification.play();
     });
@@ -617,6 +654,7 @@
       for (var i = 0; i<tables.length; i++){
         tables[i].orders = [];
         tables[i].isOpen = false;
+        tables[i].waiter = "";
         $('#table' + Number(i+1)).css('background-color', '#000000');
         $('#clock' + Number(i+1)).fadeOut();
       }

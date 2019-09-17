@@ -2,8 +2,12 @@ var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var SimpleCrypto = require("simple-crypto-js").default;
 var fs = require('fs'); //require filesystem module
 var io = require('socket.io')(http);
+var _secretKey = "BarPOS";
+var simpleCrypto = new SimpleCrypto(_secretKey);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -52,6 +56,10 @@ app.get('/calendar.html', function (req, res) {
   res.sendFile(__dirname + '/calendar.html');
 });
 
+app.get('/preloader.svg', function (req, res) {
+  res.sendFile(__dirname + '/preloader.svg');
+});
+
 app.get('/calendar.svg', function (req, res) {
   res.sendFile(__dirname + '/calendar.png');
 });
@@ -72,16 +80,37 @@ app.get('/close.png', function (req, res) {
   res.sendFile(__dirname + '/close.png');
 });
 
+//Password check and cookie giver
+
 io.on('connection', function(socket){
   socket.on('ping', function(table){
     io.emit('pong', true);
   });
+  socket.on('login', function(waiter) {
+    //console.log(simpleCrypto.encrypt(1234));
+    var waiters = require('./mozos.json')
+    for (var i = 0; i<waiters.length; i++) {
+      console.log('checking ' + waiters[i].nombre + waiter[0]);
+      if (waiter[0] == waiters[i].nombre) {
+        var cypheredPass = waiters[i].pass;
+        var decrypt = simpleCrypto.decrypt(cypheredPass);
+        if (waiter[1] == decrypt) {
+          console.log('Login succesful from ' + waiter[0]);
+          socket.emit('logResponse', true);
+        } else {
+          console.log('Login unsuccesful from ' + waiter[0]);
+          socket.emit('logResponse', false);
+        }
+      break;
+      }
+    }
+  })
   socket.on('tableopened', function(table){
     var json = JSON.stringify(table[0]);
     console.log('Opened table ' + table[1]);
     fs.writeFile('tables.json', json, 'utf8', function callback(err) {
     });
-    io.emit('tableopenedres', table[1]);
+    io.emit('tableopenedres', [table[1],table[2]]);
   });
   socket.on('tableclosed', function(table){
     table[0][table[1]-1].orders = [];
