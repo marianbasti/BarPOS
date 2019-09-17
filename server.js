@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
 var SimpleCrypto = require("simple-crypto-js").default;
 var fs = require('fs'); //require filesystem module
 var io = require('socket.io')(http);
