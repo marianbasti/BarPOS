@@ -31,7 +31,7 @@
       .reservationParameters {width: 100%;height;30%;margin:2%}
       .reservationTimecontainer { padding: 5px;overflow: hidden;border: 2px solid white; border-radius: 10%; position: absolute; width:20%; height: 30%}
       .table {border:0.5vh solid white;border-radius: 7%; position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;vertical-align:center;line-height:5vh}
-      .table:hover {cursor: pointer}
+      .table:hover {cursor: pointer; background-color: #414141}
       .tablecontainer {position:fixed;top:0px;left:0px;width:100%; height:100%; z-index: 2; background-color: black}
       .tableheader {position:absolute;top:0px;height:10%;width:100%;text-align:center}
       .totaltable{ width:100%}
@@ -566,12 +566,22 @@
     }
   );
 
+  $('#waiters').on('change', function() {
+    $('#waiterPIN').focus();
+  })
+  $('#waiterPIN').keyup(function () {
+    if (event.keyCode === 13) {
+        $("#waiterLogin").click();
+    }
+  })
   $('#waiterLogin').on('click', function(){
     //VALIDATE PIN
     var pin = $('#waiterPIN').val();
     var waiter = $('#waiters').val();
     socket.emit('login', [waiter,pin])
     $('#modalWaiter').fadeOut();
+    $('#waiterPIN').off();
+    $('#waiters').off();
   })
 
   $(document).ready(function() {$('.preloader').fadeOut()})
