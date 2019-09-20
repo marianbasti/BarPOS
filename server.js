@@ -125,7 +125,7 @@ io.on('connection', function(socket){
     console.log('Orders: ' + table[0][table[1]-1].orders);
     fs.writeFile('tables.json', json, 'utf8', function callback(err) {
     });
-    io.emit('alteredordersres', [table[1],table[0][table[1]-1].orders]);
+    io.emit('alteredordersres', [table[1],table[0][table[1]-1]]);
   });
   socket.on('alteredreserv', function(table){
     var json = JSON.stringify(table[0]);

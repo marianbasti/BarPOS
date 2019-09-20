@@ -11,25 +11,25 @@
       select option:nth-child(odd) {background-color: #030303;}
       select optgroup {background-color: #222222; font-size: 5vh}
       table, td, th, tr{color: white;border: 1px solid black; border-collapse: collapse}
-      .addcontrols {position: absolute; bottom: 0px; width:100%; height:6%; display: flex; align-items: center; flex-direction: row;}
+      .addcontrols {position: fixed; bottom: 10vh; width:30%; height:40px; display: flex; align-items: center; flex-direction: row;}
       .totaltable {}
       .cantitem {text-align: right}
-      .controls {position:absolute; top:60px; width:100%; height:90%}
+      .controls {position:absolute; top:60px; width:100%; display: flex; align-items: center; justify-content: center; flex-direction: column;}
       .controlscontainer {position:absolute;right:0px; top:0px; left:69.5%; bottom:15%; width:30%;background-color: #222233;border:1px solid black; z-index:1;overflow-y: auto}
       .leftPanel {position:absolute;width: 6vh; height: 100%;z-index:3; left:7px; top:11%; }
       .modalReservationTime {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       #modalCalendar {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       .modalWaiter {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       .monto {text-align: right;}
-      .orderscontainer {margin: 0px;height: 90%; overflow-y: auto}
+      .orderscontainer {margin: 0px; overflow-y: auto; width: 100%}
       .preloader {display: flex; align-items: center; justify-content: center; flex-direction: column;position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: black; z-index:1000}
       .products {width:85% }
       .addsame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; color: white; border: 0px; background-color: #00cc00}
       .removesame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #901010; color: white; border: 0px}
       .reservationControls {right:0px;font-size: 3vh !important; line-height:2.5vh; width:10vh; height:10%; position: absolute;background-color:rgba(0,0,0,0);color:white;font-size:5vh;}
       .reserved {position:absolute; width:20px; height:20px; top:-16%; left:-16%; border-radius: 50%; background-color: #ffa200; z-index:200}
-      .reservationParameters {width: 100%;height;30%;margin:2%}
-      .reservationTimecontainer { padding: 5px;overflow: hidden;border: 2px solid white; border-radius: 10%; position: absolute; width:20%; height: 30%}
+      .reservationParameters {width: 100%;height:30%;margin:2%; font-size: 80%}
+      .reservationTimecontainer { padding: 15px;overflow: hidden;border: 2px solid white; border-radius: 10%; position: absolute; height: 50vh}
       .table {border:0.5vh solid white;border-radius: 7%; position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;line-height:5vh;font-size: 2.7vh;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       .table:hover {cursor: pointer; background-color: #414141}
       .tablecontainer {position:fixed;top:0px;left:0px;width:100%; height:100%; z-index: 2; background-color: black}
@@ -37,9 +37,10 @@
       .timer { width:150%}
       .totaltable{ width:100%}
       #addproduct {height: 100%; width:15%; background-color: #ffeb38; border-radius: 0px}
-      #closetable {position:fixed;padding: 0px; margin:0px;width:30%;height:15%;bottom:0px;background-color:#cc2222;color:white;font-size:20px;border-radius: 5%}
+      #closetable {position:fixed;padding: 0px; margin:0px;width:30%;height:10vh;bottom:0px;background-color:#cc2222;color:white;font-size:20px;border-radius: 5%}
       #CloseAllTables {position: absolute;top:14%;width: 100%}
-      #configTableButton {width: 10%; margin: 5px;}
+      #configTable {display: flex; align-items: center; justify-content: center; flex-direction: column;}
+      #configTableButton {position: absolute;width: 10%; margin: 5px;left: 5px;top:5px}
       #configTableModal {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       #confirmReservation { position: absolute;left:-2px;bottom: 0; width:101%; height:20%}
       #leftPanelButton {margin: 7px;width: 6vh}
@@ -48,10 +49,11 @@
       #modalWaiterContainer {overflow: hidden;border: 2px solid white;border-radius: 10%;display: flex; align-items: center; justify-content: center; flex-direction: column;}
       #opentable {width:30%; height:100%; position: fixed; top:50px;z-index:99;background-color:#22cc22;color:white;font-size:5vh}
       #orderTable {width:100%}
+      #partyOf {color: white; width:15%; text-align: center; background-color: #030303}
       #resetTablesOrders {position: absolute;top: 0;width: 100%}
       #resetTablesReservations {position: absolute;top:7%;width: 100%}
-      #reservetable {margin: 5px; font-size: 25px !important; line-height:2.5vh; width:40px; height:40px; position: absolute;right: 0;z-index:99;background-color:#ffa200;color:white;font-size:5vh; border-radius: 30%}
-      #reservationParameters {height:75%; width:96%;display: flex; align-items: center; justify-content: center; flex-direction: column}
+      #reservetable {margin: 5px; font-size: 25px !important; line-height:2.5vh; width:40px; height:40px; position: absolute;right: 0;top:0;z-index:99;background-color:#ffa200;color:white;font-size:5vh; border-radius: 30%}
+      #reservationParameters {font-size: 5vh;height:75%; width:96%;display: flex; align-items: center; justify-content: center; flex-direction: column}
       #waiterLogin {margin-bottom: 0;border: 0px;width: 101%; bottom: 0}
   </style>
   </head>
@@ -98,14 +100,15 @@
     </div>
     <div class="controlscontainer" id='controlscontainer'>
       <input type="button" id='opentable' value="Abrir mesa">
-      <input type="button" id='reservetable' value="R">
-      <input type="image" id='configTableButton' src="config.png">
       <div class="tableheader">
         <h1 id='tablename'></h1>
         <p style='margin:0' id='thisTableWaiter'></p>
+        <input type="button" id='reservetable' value="R">
+        <input type="image" id='configTableButton' src="config.png">
       </div>
       <div class="controls" id='controls'>
-        <input type="number" id="partyOf" value="1" min='1'>
+        <div style='display: flex; align-items: center; justify-content: center; flex-direction: row; color:white; width:80%'>Comensales: <input type="number" id="partyOf" value="1" min='1'></div>
+
         <div class="orderscontainer" id="orderscontainer">
           <div class="addcontrols">
             <select class="products" id="products">
@@ -129,8 +132,8 @@
             </tr>
           </table>
         </div>
-        <input type="button" id="closetable" value="Cerrar mesa">
       </div>
+      <input type="button" id="closetable" value="Cerrar mesa">
     </div>
     <div id="modalWaiter" class='modalWaiter'>
       <div id="modalWaiterContainer">
@@ -143,9 +146,13 @@
     <div class="configTableModal" id='configTableModal'>
       <div id="configTable">
         <select id="paymentMethod">
-          <option value="Efectivo"></option>
-          <option value="Tarjeta de crédito"></option>
-          <option value="Tarjeta de débito"></option>
+          <option value="efectivo">Efectivo</option>
+          <option value="credito">Tarjeta de crédito</option>
+          <option value="debito">Tarjeta de débito</option>
+        </select>
+        <select id="paymentCard">
+          <option value="visa">VISA</option>
+          <option value="mastercard">MasterCard</option>
         </select>
         <input type="number" id="descuento" placeholder="Descuento">
       </div>
@@ -189,6 +196,7 @@
       this.orders = new Array();
       this.partyOf = 1;
       this.paymentMethod = "";
+      this.paymentCard = "";
       this.discount = 0;
       this.total = 0
     }
@@ -326,6 +334,7 @@
       tables[i].reservations = response[i].reservations;
       tables[i].waiter = response[i].waiter;
       tables[i].orders = response[i].orders;
+      tables[i].partyOf = response[i].partyOf;
       tables[i].total = response[i].total;
       if (tables[i].isOpen == true) {
         $('#table' + Number(i+1)).css('background-color', '#22cc22');
@@ -430,7 +439,16 @@
 
   $('#configTableButton').on('click', function() {
     $('#configTableModal').fadeIn();
+    var table = $('#tablename').text()[5];
   })
+
+  $('#configTableModal').on('click', function() {
+    $('#configTableModal').fadeOut();
+  })
+  $('#configTable').on('click', function(e) {
+    e.stopPropagation();
+  })
+
 
   $('#tablecontainer').on('click', function() {
     $('#tablecontainer').animate({width: '100%'});
@@ -604,6 +622,8 @@
       tables[table[0]-1].isOpen = true;
       tables[table[0]-1].waiter = table[1];
       $('#table' + table[0]).css('background-color', '#22cc22');
+      tables[table[0]-1].timer.setTime(currentTime);
+      setClock(table[0]-1);
       $('#clock' + table[0]).fadeIn();
       if ($('#tablename').text()[5] == table[0]) {
         $('#opentable').fadeOut('fast');
@@ -628,11 +648,13 @@
     });
     socket.on('alteredordersres', function(newData) {
       console.log('Ordenes alteradas de mesa ' + newData[0]);
-      console.log('Orden ' + newData[1]);
-      tables[newData[0]-1].orders = newData[1];
+      console.log('Orden ' + newData[1].orders);
+      tables[newData[0]-1].orders = newData[1].orders;
+      tables[newData[0]-1].partyOf = newData[1].partyOf;
       if ($('#tablename').text()[5] == newData[0]) {
         populateOrderTable(newData[0]-1);
         $('#total').text(computeTotal());
+        $('#partyOf').val(newData[1].partyOf);
       }
       tables[newData[0]-1].total = computeTotal();
       orderNotification.play();
