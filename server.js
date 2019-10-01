@@ -19,6 +19,18 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/index.js', function (req, res) {
+  res.sendFile(__dirname + '/index.js');
+});
+
+app.get('/style.css', function (req, res) {
+  res.sendFile(__dirname + '/style.css');
+});
+
+app.get('/favicon.ico', function (req, res) {
+  res.sendFile(__dirname + '/favicon.png');
+});
+
 app.get('/jquery-3.4.1.min.js', function (req, res) {
   res.sendFile(__dirname + '/jquery-3.4.1.min.js');
 });
