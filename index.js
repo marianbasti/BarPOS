@@ -30,54 +30,25 @@ var orderNotification = new Audio('/order.mp3');
 var openNotification = new Audio('/open.mp3');
 var closedNotification = new Audio('/closed.mp3');
 var resetNotification =new Audio('/reset.mp3');
+var tables = [new TABLE(),new TABLE(),new TABLE(),new TABLE(),new TABLE()];
+var currentTime = new Date();
+var currentWaiter = '';
+var products;
+
 Number.prototype.toFixedDown = function(digits) {
   var n = this - Math.pow(10, -digits)/2;
   n += n / Math.pow(2, 53); // added 1360765523: 17.56.toFixedDown(2) === "17.56"
   return n.toFixed(digits);
 }
 
-var tables = [new TABLE(),new TABLE(),new TABLE(),new TABLE(),new TABLE()];
-var currentTime = new Date();
-var currentWaiter = '';
-var products;
 function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
 }
 
 
-
 //HARD RESET ALL TABLES
 //socket.emit('alteredorders',[tables,1]);
-
-$('#resetTablesOrders').on('click', function(){
-  for (var i = 0; i<tables.length; i++){
-    tables[i].orders = [];
-  }
-  console.log('Borrando todas las ordenes...');
-  socket.emit('resetTablesOrders', [tables,1]);
-})
-$('#resetTablesReservations').on('click', function(){
-  for (var i = 0; i<tables.length; i++){
-    tables[i].reservations = [];
-    tables[i].isReserved = false;
-  }
-  console.log('Borrando todas las reservas...');
-  socket.emit('resetTablesReservations', [tables,1]);
-})
-$('#CloseAllTables').on('click', function(){
-  for (var i = 0; i<tables.length; i++){
-    tables[i].orders = [];
-    tables[i].isOpen = false;
-    tables[i].waiter = "";
-    tables[i].partyOf = 1;
-    tables[i].paymentMethod = "cash";
-    tables[i].paymentCard = "";
-    tables[i].discount = 0;
-  }
-  console.log('Borrando todas las reservas...');
-  socket.emit('closeAllTables', [tables,1]);
-})
 
 function setClock(i) {
   intervals[i] = setInterval(function() {
@@ -98,7 +69,6 @@ function populateOrderTable(table) {
     var markup = "<tr id='o" + i + "' class='" + order[1] + "'><td>" + order[2] + "</td><td class='cantitem'>" + order[3] + "<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'></td><td class='monto'>" + order[0] + "</td><td> <input class='removeFromList' type='button' value='Quitar'></td></tr>";
     $("#orderTable tr:last").after(markup);
   }
-  console.log(tables[table].paymentMethod);
   $('#paymentMethod').val(tables[table].paymentMethod);
   if (tables[table].paymentMethod != 'cash') {
     $('#paymentCard').val(tables[table].paymentCard);
@@ -144,6 +114,35 @@ $('#modalCalendar').load('/calendar.html', function() {
   $('.wrapper').on('click', function () {
       $('#modalCalendar').fadeOut();
   })
+})
+
+$('#resetTablesOrders').on('click', function(){
+  for (var i = 0; i<tables.length; i++){
+    tables[i].orders = [];
+  }
+  console.log('Borrando todas las ordenes...');
+  socket.emit('resetTablesOrders', [tables,1]);
+})
+$('#resetTablesReservations').on('click', function(){
+  for (var i = 0; i<tables.length; i++){
+    tables[i].reservations = [];
+    tables[i].isReserved = false;
+  }
+  console.log('Borrando todas las reservas...');
+  socket.emit('resetTablesReservations', [tables,1]);
+})
+$('#CloseAllTables').on('click', function(){
+  for (var i = 0; i<tables.length; i++){
+    tables[i].orders = [];
+    tables[i].isOpen = false;
+    tables[i].waiter = "";
+    tables[i].partyOf = 1;
+    tables[i].paymentMethod = "cash";
+    tables[i].paymentCard = "";
+    tables[i].discount = 0;
+  }
+  console.log('Borrando todas las reservas...');
+  socket.emit('closeAllTables', [tables,1]);
 })
 
 //BASES DE DATOS
@@ -365,7 +364,7 @@ $('#reservetable').on('click', function() {
 })
 
 $('#modalReservationTime').on('click', function() {
-  $('#modalReservationTime').fadeOut()
+  $('#modalReservationTime').fadeOut();
   $('#reservationclient').val('');
   $('#reservationdateInput').val('');
   $('#partyOfReservation').val('');
@@ -385,12 +384,11 @@ $('#confirmReservation').on('click', function(e) {
     alert('Revisar datos!');
   } else {
     tables[mesa-1].isReserved= true;
-    forDate.setMinutes(unfDate.split(':')[1]);
+    forDate.setMinutes(unfDate.split('T')[1].split(':')[1]);
     forDate.setHours(unfDate.split('T')[1].split(':')[0]);
-    forDate.setDate(unfDate.split('-')[1]);
-    forDate.setMonth(unfDate.split('-')[2].split('T')[0]);
+    forDate.setMonth(unfDate.split('-')[1]-1);
+    forDate.setDate(unfDate.split('-')[2].split('T')[0]);
     forDate.setYear(unfDate.split('-')[0]);
-    //newReservation.date.setDate(unfDate);
     newReservation.date= forDate;
     newReservation.client = client;
     newReservation.partyOf = party;
@@ -398,6 +396,9 @@ $('#confirmReservation').on('click', function(e) {
     socket.emit('alteredreserv', [tables, mesa]);
     $('#modalReservationTime').fadeOut();
   }
+  $('#reservationclient').val('');
+  $('#reservationdateInput').val('');
+  $('#partyOfReservation').val('');
 })
 $('#listReservations').on('click', function() {
     $('#modalCalendar').fadeIn();
@@ -544,7 +545,7 @@ $(function() {
   socket.on('alteredreservres', function(newData) {
     console.log('Se reservo la mesa ' + newData[0]);
     console.log(newData[1].reservations);
-    tables[newData[0]-1].reservations = newData[1];
+    tables[newData[0]-1].reservations = newData[1].reservations;
     if(newData[1].isReserved == true) {
       tables[newData[0]-1].isReserved = true;
       $('#reserved' + newData[0]).fadeIn('fast');
