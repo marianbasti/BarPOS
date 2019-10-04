@@ -43,6 +43,9 @@
       tables[table-1].reservations.splice(reservationNo, 1);
       console.log(tables[table-1].reservations);
       $(this).closest('tr').remove();
+      if (reservationNo == 0) {
+        tables[table-1].isReserved = false;
+      }
       socket.emit('removeReservation', [tables, table]);
     })
   });
