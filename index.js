@@ -110,11 +110,7 @@ $('#leftPanelDetailCloseTables').hide();
 $('#leftPanelDetailListReservations').hide();
 $('#paymentCard').hide();
 $('#modalCalendar').hide();
-$('#modalCalendar').load('/calendar.html', function() {
-  $('.wrapper').on('click', function () {
-      $('#modalCalendar').fadeOut();
-  })
-})
+
 
 $('#resetTablesOrders').on('click', function(){
   for (var i = 0; i<tables.length; i++){
@@ -389,6 +385,7 @@ $('#confirmReservation').on('click', function(e) {
     forDate.setMonth(unfDate.split('-')[1]-1);
     forDate.setDate(unfDate.split('-')[2].split('T')[0]);
     forDate.setYear(unfDate.split('-')[0]);
+    console.log(forDate);
     newReservation.date= forDate;
     newReservation.client = client;
     newReservation.partyOf = party;
@@ -401,10 +398,14 @@ $('#confirmReservation').on('click', function(e) {
   $('#partyOfReservation').val('');
 })
 $('#listReservations').on('click', function() {
+    $('#modalCalendar').load('/calendar.html');
     $('#modalCalendar').fadeIn();
     $('.calendar').on('click', function(e) {
       e.stopPropagation();
     });
+})
+$('#modalCalendar').on('click', function () {
+  $('#modalCalendar').fadeOut();
 })
 
 //LEFTPANEL
@@ -545,6 +546,17 @@ $(function() {
   socket.on('alteredreservres', function(newData) {
     console.log('Se reservo la mesa ' + newData[0]);
     console.log(newData[1].reservations);
+    tables[newData[0]-1].reservations = newData[1].reservations;
+    if(newData[1].isReserved == true) {
+      tables[newData[0]-1].isReserved = true;
+      $('#reserved' + newData[0]).fadeIn('fast');
+    } else {
+      $('#reserved' + newData[0]).fadeOut('fast');
+    }
+    orderNotification.play();
+  })
+  socket.on('removeReservationRes', function(newData) {
+    console.log('Se elimino reserva de mesa ' + newData[0]);
     tables[newData[0]-1].reservations = newData[1].reservations;
     if(newData[1].isReserved == true) {
       tables[newData[0]-1].isReserved = true;

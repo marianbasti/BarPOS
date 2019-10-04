@@ -12,7 +12,7 @@ table, td, th, tr{color: white;border: 1px solid black; border-collapse: collaps
 .controlscontainer {position:absolute;right:0px; top:0px; left:69.5%; bottom:15%; width:30%;background-color: #222233;border:1px solid black; z-index:1;overflow-y: auto}
 .leftPanel {position:absolute;width: 6vh; height: 100%;z-index:3; left:7px; top:11%; }
 .modalReservationTime {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
-#modalCalendar {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
+#modalCalendar {position: absolute; top:0;right: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;}
 .modalWaiter {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
 .monto {text-align: right;}
 .orderscontainer {margin: 0px; overflow-y: auto; width: 100%}

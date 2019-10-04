@@ -134,6 +134,19 @@ function isArray(obj){
     return (Object.prototype.toString.call(obj) === '[object Array]');
 }
 
+//Check if reservation time has passed. If so, delete automatically after 15 minutes
+function checkReservations {
+  var tables = require('./mozos.json');
+  for (var i=0; i<tables.length, i++) {
+    for (var j=0; i<tables[i].reservations.length, j++) {
+      var isExpired = //TIEMPO DE RESERVA - TIEMPO ACTUAL  < 15minutos
+      if (isExpired) {
+        tables[i].reservations.splice(j,1);
+      }
+    }
+  }
+}
+
 //Password check and cookie giver
 
 io.on('connection', function(socket){
@@ -142,7 +155,7 @@ io.on('connection', function(socket){
   });
   socket.on('login', function(waiter) {
     //console.log(simpleCrypto.encrypt(1234));
-    var waiters = require('./mozos.json')
+    var waiters = require('./mozos.json');
     for (var i = 0; i<waiters.length; i++) {
       console.log('checking ' + waiters[i].nombre + waiter[0]);
       if (waiter[0] == waiters[i].nombre) {
@@ -193,6 +206,13 @@ io.on('connection', function(socket){
     fs.writeFile('tables.json', json, 'utf8', function callback(err) {
     });
     io.emit('alteredreservres', [table[1],table[0][table[1]-1]]);
+  });
+  socket.on('removeReservation', function(table){
+    var json = JSON.stringify(table[0]);
+    console.log('Reservation removed from table: ' + table[1]);
+    fs.writeFile('tables.json', json, 'utf8', function callback(err) {
+    });
+    io.emit('removeReservationRes', [table[1],table[0][table[1]-1]]);
   });
   socket.on('resetTablesOrders', function(table){
     var json = JSON.stringify(table[0]);
