@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <style media="screen">
-      #reservationsList {overflow-y: scroll;position: absolute;width:60%;height:100% top:0px; right:0px;margin: 80px}
+      #reservationsList {overflow-y: scroll;position: absolute;width:60%;height:100% top:0px; right:20%;margin: 80px}
       table, td, th, tr{height:10%; color: white;border: 1px solid white; border-collapse: collapse}
     </style>
     <title></title>
@@ -11,11 +11,11 @@
   <body>
     <table id='reservationsList'>
       <tr>
-        <td>Nombre</td>
-        <td>Cantidad</td>
-        <td>Dia</td>
-        <td>Horario</td>
-        <td>Mesa</td>
+        <th class='sortable'>Nombre</th>
+        <th class='sortable'>Cantidad</th>
+        <th class='sortable'>Fecha</hd>
+        <th class='sortable'>Horario</th>
+        <th class='sortable'>Mesa</th>
       </tr>
     </table>
   </body>
@@ -26,10 +26,13 @@
       if(reservation.length == 0) {
       } else {
         for (var j = 0; j<reservation.length; j++) {
-          console.log(reservation);
           var resDate = reservation[j].date.split('T')[0];
-          var resHour = reservation[j].date.split('T')[1];
-          var markup = "<tr id='" + i + "r"+j+"'><td>" + reservation[j].client + "</td><td>" + reservation[j].partyOf + "</td><td>" + resDate + "</td><td>" + resHour + "</td><td>" + Number(i+1) + "</td><td> <input class='removeReservation' type='button' value='Eliminar'></td></tr>";
+          var resTime = reservation[j].date.split('T')[1].split('.')[0];
+          var resHours = Number(resTime.split(':')[0])-3;
+          if (resHours<0){ resHours+=24};
+          var resMinutes = resTime.split(':')[1];
+          resTime = resHours + ':' + resMinutes;
+          var markup = "<tr id='" + i + "r"+j+"'><td>" + reservation[j].client + "</td><td>" + reservation[j].partyOf + "</td><td>" + resDate + "</td><td>" + resTime + "</td><td>" + Number(i+1) + "</td><td> <input class='removeReservation' type='button' value='Eliminar'></td></tr>";
           $("#reservationsList tr:last").after(markup);
         }
       }
@@ -43,11 +46,46 @@
       tables[table-1].reservations.splice(reservationNo, 1);
       console.log(tables[table-1].reservations);
       $(this).closest('tr').remove();
-      if (reservationNo == 0) {
+      if (tables[table-1].reservations.length == 0) {
         tables[table-1].isReserved = false;
       }
       socket.emit('removeReservation', [tables, table]);
     })
   });
+
+  $('#reservationsList').on('click', '#sort1', function() {
+    sortTable(0);
+  })
+
+
+  $("th").hover(
+    function() {
+      $('selector').css('cursor', 's-resize');
+    }, function() {
+      $('selector').css('cursor', 'default');
+    }
+  );
+
+  $('th.sortable').click(function(){
+    var table = $(this).parents('table').eq(0);
+    var ths = table.find('tr:gt(0)').toArray().sort(compare($(this).index()));
+    this.asc = !this.asc;
+    if (!this.asc)
+       ths = ths.reverse();
+    for (var i = 0; i < ths.length; i++)
+       table.append(ths[i]);
+  });
+
+  function compare(idx) {
+      return function(a, b) {
+         var A = tableCell(a, idx), B = tableCell(b, idx)
+         return $.isNumeric(A) && $.isNumeric(B) ?
+            A - B : A.toString().localeCompare(B)
+      }
+  }
+
+  function tableCell(tr, index){
+      return $(tr).children('td').eq(index).text()
+  }
   </script>
 </html>

@@ -21,7 +21,6 @@ class TABLE {
   }
 }
 
-
 var socket = io();
 var intervals = new Array(5);
 var orderNotification = new Audio('/order.mp3');
