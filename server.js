@@ -135,19 +135,45 @@ function isArray(obj){
 }
 
 //Check if reservation time has passed. If so, delete automatically after 15 minutes
-function checkReservations {
-  var tables = require('./mozos.json');
-  for (var i=0; i<tables.length, i++) {
-    for (var j=0; i<tables[i].reservations.length, j++) {
-      var isExpired = //TIEMPO DE RESERVA - TIEMPO ACTUAL  < 15minutos
-      if (isExpired) {
-        tables[i].reservations.splice(j,1);
+function checkReservations() {
+  readJson('./tables.json', (err,tables) =>{
+    var now = new Date();
+    for (var i=0; i<tables.length; i++) {
+      console.log("Checking reservations for table " + Number(i+1));
+      for (var j=0; j<tables[i].reservations.length; j++) {
+        console.log("Checking reservation number " + Number(j+1));
+        var dateEvaluated = new Date(tables[i].reservations[j].date);
+        var timeToExpiration =  (dateEvaluated - now); //TIEMPO DE RESERVA - TIEMPO ACTUAL  < 15minutos
+        console.log(timeToExpiration/1000 + " seconds");
+        if (timeToExpiration < 0) {
+          tables[i].reservations.splice(j,1);
+          if(tables[i].reservations.length == 0) {
+            tables[i].isReserved = false;
+          }
+          var json = JSON.stringify(tables);
+          fs.writeFile('tables.json', json, 'utf8', function callback(err) {
+          });
+          io.emit('reservationExpired', i)
+        }
       }
     }
-  }
+  });
+
+  return(true);
 }
 
-//Password check and cookie giver
+//Read JSON without caching the data so I can evaluate new entries (thank you Guilherme Oenning!)
+var readJson = (path, cb) => {
+  fs.readFile(require.resolve(path), (err, data) => {
+    if (err)
+      cb(err)
+    else
+      cb(null, JSON.parse(data))
+  })
+}
+
+var reservationsChecker = setInterval(() => checkReservations(), 5000);
+
 
 io.on('connection', function(socket){
   socket.on('ping', function(table){
@@ -192,7 +218,7 @@ io.on('connection', function(socket){
     var newJSON = table[0];
     var newJSONs = JSON.stringify(newJSON);
     console.log('Altered table: ' + table[1]);
-    console.log(getDiff(newJSON,originalJSON));
+    console.log(getDiff(originalJSON,newJSON));
     fs.writeFile('tables.json', newJSONs, 'utf8', function callback(err) {
     });
     io.emit('alteredordersres', [table[1],table[0][table[1]-1]]);

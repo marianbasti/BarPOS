@@ -593,6 +593,16 @@ $(function() {
     $('#closetable').fadeOut('fast');
     resetNotification.play();
   });
+  socket.on('reservationExpired', function(i) {
+    console.log('Expiró reserva de mesa ' + i);
+    $.getJSON("/tables.json", function(response) {
+      tables[i].isReserved = response[i].isReserved;
+      tables[i].reservations = response[i].reservations;
+      if(tables[i].isReserved == false) {
+        $('#reserved' + Number(i+1)).fadeOut('fast');
+      }
+    });
+  });
 })
 
 Object.defineProperty(console, '_commandLineAPI',
