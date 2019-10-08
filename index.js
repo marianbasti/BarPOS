@@ -90,6 +90,25 @@ function computeTotal() {
   return(total);
 }
 
+function isTimeSlotAvailable(date,table) {
+  var timeSlot = new Date(date);
+  timeSlot.setSeconds(0);
+  // If there's no other reservation for the table, time slot is obviously available
+  if (tables[table].reservations.length == 0) {
+    return(true);
+  }
+  for (var i = 0; i<tables[table].reservations.length; i++) {
+    var timeDiff = timeSlot.getTime() - new Date(tables[table].reservations[i].date).getTime();
+    //Check if it steps on any other reservation in a range of 2 hours prior or later
+    //Gotta make this a setting
+    if (timeDiff < 7195000 && timeDiff > -7195000) {
+      return false;
+    } else {
+      return(true);
+    }
+  }
+}
+
 $('#clock1').hide();
 $('#clock2').hide();
 $('#clock3').hide();
@@ -377,8 +396,9 @@ $('#confirmReservation').on('click', function(e) {
   var forDate = new Date();
   if (unfDate == '' || party == 0 || client == '') {
     alert('Revisar datos!');
-  } else {
+  } else if (isTimeSlotAvailable(unfDate,mesa-1)) {
     tables[mesa-1].isReserved= true;
+    forDate.setSeconds(0);
     forDate.setMinutes(unfDate.split('T')[1].split(':')[1]);
     forDate.setHours(unfDate.split('T')[1].split(':')[0]);
     forDate.setMonth(unfDate.split('-')[1]-1);
@@ -391,10 +411,12 @@ $('#confirmReservation').on('click', function(e) {
     tables[mesa-1].reservations.push(newReservation);
     socket.emit('alteredreserv', [tables, mesa]);
     $('#modalReservationTime').fadeOut();
+    $('#reservationclient').val('');
+    $('#reservationdateInput').val('');
+    $('#partyOfReservation').val('');
+  } else {
+    alert('Tiempo ocupado');
   }
-  $('#reservationclient').val('');
-  $('#reservationdateInput').val('');
-  $('#partyOfReservation').val('');
 })
 $('#listReservations').on('click', function() {
     $('#modalCalendar').load('/calendar.html');
@@ -474,9 +496,10 @@ $('#waiterLogin').on('click', function(){
   $('#modalWaiter').fadeOut();
   $('#waiterPIN').off();
   $('#waiters').off();
+  document.body.requestFullscreen();
 })
 
-$(document).ready(function() {$('.preloader').fadeOut()})
+$(document).ready(function() {$('.preloader').fadeOut()});
 
 $(function() {
   socket.on('pong', function() {

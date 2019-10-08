@@ -172,7 +172,7 @@ var readJson = (path, cb) => {
   })
 }
 
-var reservationsChecker = setInterval(() => checkReservations(), 5000);
+var reservationsChecker = setInterval(() => checkReservations(), 300000);
 
 
 io.on('connection', function(socket){
