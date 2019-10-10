@@ -84,9 +84,14 @@ function populateOrderTable(table) {
 
 function computeTotal() {
   var total = 0;
+  var table = tables[$('#tablename').text()[5]-1];
   $('tr').each(function() {
     total = total + (Number($(this).find('.monto').text()) * Number($(this).find('.cantitem').text()));
   })
+  if (table.discount > 0) {
+    total = total * (1-(table.discount/100));
+    total = total.toFixed(2) + ' (' + table.discount + '% de descuento)';
+  }
   return(total);
 }
 
@@ -103,10 +108,62 @@ function isTimeSlotAvailable(date,table) {
     //Gotta make this a setting
     if (timeDiff < 7195000 && timeDiff > -7195000) {
       return false;
-    } else {
-      return(true);
     }
   }
+  return(true);
+}
+
+function customAlert(msg) {
+  $('#customAlertMessage').text(msg);
+  $('#customAlertAccept').show();
+  $('#customAlertConfirm').hide();
+  $('#customAlertCancel').hide();
+  $('#customAlert').fadeIn('fast');
+  $('#customAlertAccept').on('click', function() {
+    $('#customAlertAccept').off();
+    $('#customAlert').fadeOut('fast');
+  })
+}
+
+function customConfirm(msg, functionToExecute) {
+  $('#customAlertMessage').text(msg);
+  $('#customAlertAccept').hide();
+  $('#customAlertConfirm').show();
+  $('#customAlertCancel').show();
+  $('#customAlert').fadeIn('fast');
+  $('#customAlertConfirm').on('click', function() {
+    $('#customAlertConfirm').off();
+    $('#customAlertCancel').off();
+    $('#customAlert').fadeOut('fast');
+    functionToExecute()
+  })
+  $('#customAlertCancel').on('click', function() {
+    $('#customAlertConfirm').off();
+    $('#customAlertCancel').off();
+    $('#customAlert').fadeOut('fast');
+    return(false);
+  })
+}
+
+function closeTable() {
+  tableclosed = $('#tablename').text()[5];
+  $('#table' + tableclosed).css('background-color', '#000000');
+  tables[tableclosed-1].isOpen = false;
+  tables[tableclosed-1].orders = [];
+  tables[tableclosed-1].waiter = "";
+  tables[tableclosed-1].partyOf = 1;
+  tables[tableclosed-1].paymentMethod = "cash";
+  tables[tableclosed-1].paymentCard = "";
+  tables[tableclosed-1].discount = 0;
+  populateOrderTable(tableclosed-1)
+  $('#closetable').fadeOut('fast');
+  $('#opentable').fadeIn('fast');
+  $('#thisTableWaiter').text('');
+  $('#clock' + tableclosed).fadeOut();
+  $('#clock' + tableclosed).text('00:00:00')
+  clearInterval(intervals[tableclosed-1]);
+  console.log('Cerrando mesa '+ tableclosed);
+  socket.emit('tableclosed', [tables, tableclosed]);
 }
 
 $('#clock1').hide();
@@ -114,6 +171,7 @@ $('#clock2').hide();
 $('#clock3').hide();
 $('#clock4').hide();
 $('#clock5').hide();
+$('#customAlert').hide();
 $('#reserved1').hide();
 $('#reserved2').hide();
 $('#reserved3').hide();
@@ -263,6 +321,7 @@ $('#opentable').on('click', function() {
   tables[tableopened[5]-1].isOpen = true;
   tables[tableopened[5]-1].waiter = currentWaiter;
   $('#partyOf').val(1);
+  $('#total').text('0');
   $('#closetable').show();
   $('#opentable').fadeOut('fast');
   tables[tableopened[5]-1].timer.setTime(currentTime);
@@ -273,26 +332,7 @@ $('#opentable').on('click', function() {
 });
 
 $('#closetable').on('click', function() {
-  if (confirm('Cerrar mesa?')) {
-    var tableclosed = $('#tablename').text()[5];
-    $('#table' + tableclosed).css('background-color', '#000000');
-    tables[tableclosed-1].isOpen = false;
-    tables[tableclosed-1].orders = [];
-    tables[tableclosed-1].waiter = "";
-    tables[tableclosed-1].partyOf = 1;
-    tables[tableclosed-1].paymentMethod = "cash";
-    tables[tableclosed-1].paymentCard = "";
-    tables[tableclosed-1].discount = 0;
-    populateOrderTable(tableclosed-1)
-    $('#closetable').fadeOut('fast');
-    $('#opentable').fadeIn('fast');
-    $('#thisTableWaiter').text('');
-    $('#clock' + tableclosed).fadeOut();
-    $('#clock' + tableclosed).text('00:00:00')
-    clearInterval(intervals[tableclosed-1]);
-    console.log('Cerrando mesa '+ tableclosed);
-    socket.emit('tableclosed', [tables, tableclosed]);
-  }
+  customConfirm('Cerrar mesa?', closeTable)
 });
 
 $('#configTableButton').on('click', function() {
@@ -355,6 +395,7 @@ $('.table').on('click', function(e) {
   var tableclicked = $(this).attr('id')[5];
   console.log(tables[tableclicked-1].orders);
   populateOrderTable(tableclicked-1);
+  $('#tablename').text("Mesa " + tableclicked);
   if (tables[tableclicked-1].isOpen == true) {
     $('#opentable').hide();
     $('#closetable').show();
@@ -366,7 +407,6 @@ $('.table').on('click', function(e) {
     $('#closetable').hide();
     $('#thisTableWaiter').text('');
   }
-  $('#tablename').text("Mesa " + tableclicked);
   $('#tablecontainer').animate({width: '69.5%'});
 });
 
@@ -395,7 +435,7 @@ $('#confirmReservation').on('click', function(e) {
   var newReservation = new Reservation();
   var forDate = new Date();
   if (unfDate == '' || party == 0 || client == '') {
-    alert('Revisar datos!');
+    customAlert('Revisar datos!');
   } else if (isTimeSlotAvailable(unfDate,mesa-1)) {
     tables[mesa-1].isReserved= true;
     forDate.setSeconds(0);
@@ -415,7 +455,7 @@ $('#confirmReservation').on('click', function(e) {
     $('#reservationdateInput').val('');
     $('#partyOfReservation').val('');
   } else {
-    alert('Tiempo ocupado');
+    customAlert('Tiempo ocupado');
   }
 })
 $('#listReservations').on('click', function() {

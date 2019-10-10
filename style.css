@@ -10,8 +10,10 @@ table, td, th, tr{color: white;border: 1px solid black; border-collapse: collaps
 .cantitem {text-align: right}
 .controls {position:absolute; top:60px; width:100%; display: flex; align-items: center; justify-content: center; flex-direction: column;}
 .controlscontainer {position:absolute;right:0px; top:0px; left:69.5%; bottom:15%; width:30%;background-color: #222233;border:1px solid black; z-index:1;overflow-y: auto}
+.customAlert {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
+.customAlertContainer {overflow: hidden; background-color: black; border: 2px solid white;border-radius: 10%;display: flex; align-items: center; justify-content: center; flex-direction: column;}
 .leftPanel {position:absolute;width: 6vh; height: 100%;z-index:3; left:7px; top:11%; }
-.modalReservationTime {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
+.modalReservationTime {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; }
 #modalCalendar {position: absolute; top:0;right: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;}
 .modalWaiter {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
 .monto {text-align: right;}
@@ -37,7 +39,7 @@ table, td, th, tr{color: white;border: 1px solid black; border-collapse: collaps
 #configTable > select, #configTable > input {margin: 5px}
 #configTableButton {position: absolute;width: 10%; margin: 5px;left: 5px;top:5px}
 #configTableModal {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
-#confirmReservation { position: absolute;left:-2px;bottom: 0; width:101%; height:20%}
+#confirmReservation {font-size:30px; position: absolute;left:-2px;bottom: 0; width:101%; height:20%}
 #leftPanelButton {margin: 7px;width: 6vh}
 #leftPanelButton:focus {outline: none;}
 #listReservations {position: absolute;top:21%;width:100%}
@@ -49,4 +51,5 @@ table, td, th, tr{color: white;border: 1px solid black; border-collapse: collaps
 #resetTablesReservations {position: absolute;top:7%;width: 100%}
 #reservetable {margin: 5px; font-size: 25px !important; line-height:2.5vh; width:40px; height:40px; position: absolute;right: 0;top:0;z-index:99;background-color:#ffa200;color:white;font-size:5vh; border-radius: 30%}
 #reservationParameters {font-size: 5vh;height:75%; width:96%;display: flex; align-items: center; justify-content: center; flex-direction: column}
-#waiterLogin {margin-bottom: 0;border: 0px;width: 101%; bottom: 0}
+.waiterLogin {font-size:30px;margin-top:1vh; margin-bottom: 0;border: 0px;width: 101%; bottom: 0}
+.waiterLogin2 {color:white; padding-left: 10px; padding-right: 10px;position:relative;font-size:30px;margin-top:1vh; margin-bottom: 0;border: 0px;width: 55%; bottom: 0}

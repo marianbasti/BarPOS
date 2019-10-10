@@ -92,7 +92,7 @@
         <p style='font-size:5vh;margin: 1vh'>Quien atiende?</p>
         <select style='font-size:5vh;margin:1vh' id="waiters"></select>
         <input style='width: 50%;font-size:5vh;margin:1vh;text-align:center' type="password" id="waiterPIN" style='margin:5px' placeholder="PIN">
-        <input style='font-size:5vh;margin-top:1vh' type="button" id="waiterLogin" value="Ingresar">
+        <input type="button" id="waiterLogin" class="waiterLogin" value="Ingresar">
       </div>
     </div>
     <div class="configTableModal" id='configTableModal'>
@@ -121,6 +121,16 @@
     </div>
     <div id="modalCalendar">
 
+    </div>
+    <div id="customAlert" class='customAlert'>
+      <div class="customAlertContainer">
+        <p style='font-size:5vh;margin: 1vh' id='customAlertMessage'></p>
+        <input type="button" id='customAlertAccept' class="waiterLogin" value="Aceptar">
+        <div style="display: flex; align-items: center; justify-content: center; flex-direction: row;">
+          <input style="background-color:#3c9134" type="button" id='customAlertConfirm' class="waiterLogin2" value="Aceptar">
+          <input style="background-color:#91343a" type="button" id='customAlertCancel' class="waiterLogin2" value="Cancelar">
+        </div>
+      </div>
     </div>
   </body>
 </html>
