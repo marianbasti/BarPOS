@@ -19,6 +19,10 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/settings', function (req, res) {
+  res.sendFile(__dirname + '/settings.html');
+});
+
 app.get('/index.js', function (req, res) {
   res.sendFile(__dirname + '/index.js');
 });
@@ -79,6 +83,10 @@ app.get('/calendar-clear.png', function (req, res) {
   res.sendFile(__dirname + '/calendar-clear.png');
 });
 
+app.get('/settings.svg', function (req, res) {
+  res.sendFile(__dirname + '/settings.svg');
+});
+
 app.get('/config.png', function (req, res) {
   res.sendFile(__dirname + '/config.png');
 });
@@ -89,6 +97,10 @@ app.get('/clean.png', function (req, res) {
 
 app.get('/close.png', function (req, res) {
   res.sendFile(__dirname + '/close.png');
+});
+
+app.get('/arrow.svg', function (req, res) {
+  res.sendFile(__dirname + '/arrow.svg');
 });
 
 //Check diff

@@ -2,10 +2,32 @@
 <html lang="es" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>BarPOS settings</title>
+    <link rel="stylesheet" href="/style.css">
+    <style media="screen">
+      h2 {color: white}
+      .settingsContainer {position: absolute; padding: 5%; width: 80%}
+      .settingDescription {height: 100%;width:80%; padding: 5px; top: 0px}
+      .settingOption {position: relative;list-style-position: outside;width: 100%; height:150%; border: 2px solid white}
+      .settingAction {position: absolute;bottom: 30%;left:80%}
+    </style>
   </head>
   <body>
+    <div class="settingsContainer">
+      <li class="settingOption">
+        <div class="settingDescription">
+          <h1>Uso induvidual</h1>
+          <input class="settingAction" type="checkbox" id="enableWaiters">
+        </div>
+      </li>
+      <li class="settingOption">
+        <div class="settingDescription">
+          <h1>Editar carta</h1>
+          <img style="width:30px" class="settingAction" src="arrow.svg" alt=">">
+        </div>1
+      </li>
 
+    </div>
   </body>
 </html>
 

@@ -184,6 +184,7 @@ $('#leftPanelDetailCleanOrders').hide();
 $('#leftPanelDetailCleanreservations').hide();
 $('#leftPanelDetailCloseTables').hide();
 $('#leftPanelDetailListReservations').hide();
+$('#leftPanelSettings').hide();
 $('#paymentCard').hide();
 $('#modalCalendar').hide();
 
@@ -517,6 +518,14 @@ $("#listReservations").hover(
     $('#leftPanelDetailListReservations').fadeIn();
   }, function() {
     $('#leftPanelDetailListReservations').fadeOut();
+  }
+);
+
+$("#settings").hover(
+  function() {
+    $('#leftPanelSettings').fadeIn();
+  }, function() {
+    $('#leftPanelSettings').fadeOut();
   }
 );
 
