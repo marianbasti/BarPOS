@@ -39,6 +39,14 @@ app.get('/jquery-3.4.1.min.js', function (req, res) {
   res.sendFile(__dirname + '/jquery-3.4.1.min.js');
 });
 
+app.get('/bootstrap.min.js', function (req, res) {
+  res.sendFile(__dirname + '/node_modules/bootstrap/dist/js/bootstrap.min.js');
+});
+
+app.get('/bootstrap.min.css', function (req, res) {
+  res.sendFile(__dirname + '/node_modules/bootstrap/dist/css/bootstrap.min.css');
+});
+
 app.get('/productos.json', function (req, res) {
   res.sendFile(__dirname + '/productos.json');
 });

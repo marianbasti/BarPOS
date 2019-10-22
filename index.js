@@ -65,7 +65,7 @@ function populateOrderTable(table) {
   $('#orderTable').append("<tr><th>Item</th><th>Cantidad</th><th>Precio</th><th></th></tr>");
   for (var i = 0; i<tables[table].orders.length; i++) {
     order = tables[table].orders[i];
-    var markup = "<tr id='o" + i + "' class='" + order[1] + "'><td>" + order[2] + "</td><td class='cantitem'>" + order[3] + "<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'></td><td class='monto'>" + order[0] + "</td><td> <input class='removeFromList' type='button' value='Quitar'></td></tr>";
+    var markup = "<tr id='o" + i + "' class='" + order[1] + "'><td>" + order[2] + "</td><td class='cantitem'>" + order[3] + "<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'></td><td class='monto'>" + order[0] + "</td><td> <input class='removeFromList' type='button' value='X'></td></tr>";
     $("#orderTable tr:last").after(markup);
   }
   $('#paymentMethod').val(tables[table].paymentMethod);
@@ -270,7 +270,7 @@ $('#addproduct').on('click', function() {
   tables[tablealtered-1].orders.push(itemval);
   console.log('Agregado item "' + itemval + '" a la mesa ' + Number(tablealtered));
   //AÑADIR ITEM CON SU NOMBRE, COSTO Y BOTON DE QUITAR
-  var markup = "<tr id='o" + tables[tablealtered-1].orders.length + "' class='" + itemval[1] + "'><td>" + $('#products option:selected').text() + "</td><td class='cantitem'>1<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'></td><td class='monto'>" + itemval[0] + "</td><td> <input class='removeFromList' type='button' value='Quitar'></td></tr>";
+  var markup = "<tr id='o" + tables[tablealtered-1].orders.length + "' class='" + itemval[1] + "'><td>" + $('#products option:selected').text() + "</td><td class='cantitem'>1<input class='addsame' type='button' value='+'><input class='removesame' type='button' value='-'></td><td class='monto'>" + itemval[0] + "</td><td> <input class='removeFromList' type='button' value='X'></td></tr>";
   $("#orderTable tr:last").after(markup);
   $('#total').text(computeTotal());
   tables[tablealtered-1].total = computeTotal();
@@ -337,7 +337,6 @@ $('#closetable').on('click', function() {
 });
 
 $('#configTableButton').on('click', function() {
-  $('#configTableModal').fadeIn();
   var table = $('#tablename').text()[5];
 })
 
@@ -391,7 +390,7 @@ $('#tablecontainer').on('click', function() {
 })
 
 //RELLENO LOS DATOS DE LA MESA QUE CLIQUEE
-$('.table').on('click', function(e) {
+$('.myTable').on('click', function(e) {
   e.stopPropagation();
   var tableclicked = $(this).attr('id')[5];
   console.log(tables[tableclicked-1].orders);

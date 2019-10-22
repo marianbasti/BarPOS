@@ -8,26 +8,27 @@ table, td, th, tr{color: white;border: 1px solid black; border-collapse: collaps
 .addcontrols {position: fixed; bottom: 10vh; width:30%; height:40px; display: flex; align-items: center; flex-direction: row;}
 .totaltable {}
 .cantitem {text-align: right}
-.controls {position:absolute; top:60px; width:100%; display: flex; align-items: center; justify-content: center; flex-direction: column;}
-.controlscontainer {position:absolute;right:0px; top:0px; left:69.5%; bottom:15%; width:30%;background-color: #222233;border:1px solid black; z-index:1;overflow-y: auto}
+.controls {position:absolute; top:120px; width:100%; display: flex; align-items: center; justify-content: center; flex-direction: column;}
+.controlscontainer {position:absolute;right:0px; top:0px; left:69.5%; bottom:15%; width:30%;background-color: #222233;border:1px solid black; z-index:1;overflow-y: auto;display: flex; align-items: center; justify-content: center; flex-direction: column}
 .customAlert {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
 .customAlertContainer {overflow: hidden; background-color: black; border: 2px solid white;border-radius: 10%;display: flex; align-items: center; justify-content: center; flex-direction: column;}
 .leftPanel {position:absolute;width: 6vh; height: 100%;z-index:3; left:7px; top:11%; }
 .modalReservationTime {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; }
 #modalCalendar {position: absolute; top:0;right: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;}
-.modalWaiter {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:201;display: flex; align-items: center; justify-content: center; flex-direction: column;}
+.modalWaiter {position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index:2001;display: flex; align-items: center; justify-content: center; flex-direction: column;}
 .monto {text-align: right;}
 .orderscontainer {margin: 0px; overflow-y: auto; width: 100%}
 .preloader {display: flex; align-items: center; justify-content: center; flex-direction: column;position: absolute; top:0;left: 0; width: 100%; height: 100%; background-color: black; z-index:1000}
 .products {width:85% }
 .addsame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; color: white; border: 0px; background-color: #00cc00}
+.removeFromList{border:0px; background-color: #991010; color:white}
 .removesame {position: relative; margin-left: 5px; padding: 0px; text-align:center; top:50%; width:20px; height: 20px; background-color: #901010; color: white; border: 0px}
 .reservationControls {right:0px;font-size: 3vh !important; line-height:2.5vh; width:10vh; height:10%; position: absolute;background-color:rgba(0,0,0,0);color:white;font-size:5vh;}
 .reserved {position:absolute; width:20px; height:20px; top:-16%; left:-16%; border-radius: 50%; background-color: #ffa200; z-index:200}
 .reservationParameters {width: 100%;height:30%;margin:2%; font-size: 80%}
 .reservationTimecontainer { padding: 15px;overflow: hidden;border: 2px solid white; border-radius: 10%; position: absolute; height: 50vh}
-.table {border:0.5vh solid white;border-radius: 7%; position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;line-height:5vh;font-size: 2.7vh;display: flex; align-items: center; justify-content: center; flex-direction: column;}
-.table:hover {cursor: pointer; background-color: #414141}
+.myTable {border:2px solid white;border-radius: 7%; position:absolute;width:10vh;height:10vh;background-color: #000000;text-align: center;line-height:5vh;font-size: 2.7vh;display: flex; align-items: center; justify-content: center; flex-direction: column;}
+.myTable:hover {cursor: pointer; background-color: #414141}
 .tablecontainer {position:fixed;top:0px;left:0px;width:100%; height:100%; z-index: 2; background-color: black}
 .tableheader {position:absolute;top:0px;height:10%;width:100%;text-align:center}
 .timer { width:150%}

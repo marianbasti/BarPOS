@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>BarPOS</title>
     <link rel="stylesheet" href="/style.css">
+    <link href="bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
     <div class="preloader"><img src="/preloader.svg" alt="Cargando..."></div>
@@ -27,27 +28,27 @@
           <p id='leftPanelSettings' style='text-align: left;position:absolute;top:28%;left:110%;width:1000%'>Configuración del sistema</p>
 
         </div>
-      <div style='top:5%;right:5%' class="table" id='table1'>
+      <div style='top:5%;right:5%' class="myTable" id='table1'>
         <div class='reserved' id='reserved1'></div>
         <p style='margin:0px' id='nombremesa1'>MESA 1</p>
         <p style='margin:0px' id='clock1' class='timer'></p>
       </div>
-      <div style='top:5%;right:50%' class="table" id='table2'>
+      <div style='top:5%;right:50%' class="myTable" id='table2'>
         <div class='reserved' id='reserved2'></div>
         <p style='margin:0px' id='nombremesa2'>MESA 2</p>
         <p style='margin:0px' id='clock2' class='timer'></p>
       </div>
-      <div style='top:50%;right:5%' class="table" id='table3'>
+      <div style='top:50%;right:5%' class="myTable" id='table3'>
         <div class='reserved' id='reserved3'></div>
         <p style='margin:0px' id='nombremesa3'>MESA 3</p>
         <p style='margin:0px' id='clock3' class='timer'></p>
       </div>
-      <div style='top:50%;right:50%' class="table" id='table4'>
+      <div style='top:50%;right:50%' class="myTable" id='table4'>
         <div class='reserved' id='reserved4'></div>
         <p style='margin:0px' id='nombremesa4'>MESA 4</p>
         <p style='margin:0px' id='clock4' class='timer'></p>
       </div>
-      <div style='top:80%;right:80%' class="table" id='table5'>
+      <div style='top:80%;right:80%' class="myTable" id='table5'>
         <div class='reserved' id='reserved5'></div>
         <p style='margin:0px' id='nombremesa5'>MESA 5</p>
         <p style='margin:0px' id='clock5' class='timer'></p>
@@ -59,10 +60,10 @@
         <h1 id='tablename'></h1>
         <p style='margin:0' id='thisTableWaiter'></p>
         <input type="button" id='reservetable' value="R">
-        <input type="image" id='configTableButton' src="config.png">
+        <input type="image" id='configTableButton' src="config.png" data-toggle="modal" data-target="#modalConfigTable">
+        <div style='display: flex; align-items: center; justify-content: center; flex-direction: row; color:white; width:80%'>Comensales:<input style="margin-left:10px" type="number" id="partyOf" value="1" min='1'></div>
       </div>
       <div class="controls" id='controls'>
-        <div style='display: flex; align-items: center; justify-content: center; flex-direction: row; color:white; width:80%'>Comensales: <input type="number" id="partyOf" value="1" min='1'></div>
 
         <div class="orderscontainer" id="orderscontainer">
           <div class="addcontrols">
@@ -98,18 +99,25 @@
         <input type="button" id="waiterLogin" class="waiterLogin" value="Ingresar">
       </div>
     </div>
-    <div class="configTableModal" id='configTableModal'>
-      <div id="configTable">
-        <select id="paymentMethod">
-          <option value="cash">Efectivo</option>
-          <option value="credit">Tarjeta de crédito</option>
-          <option value="debit">Tarjeta de débito</option>
-        </select>
-        <select id="paymentCard">
-          <option value="visa">VISA</option>
-          <option value="mastercard">MasterCard</option>
-        </select>
-        <input style='width:50%' type="number" id="discount" min=1 max=100 placeholder="Descuento">%
+    <div id="modalConfigTable" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body" id="configTable">
+            <select id="paymentMethod">
+              <option value="cash">Efectivo</option>
+              <option value="credit">Tarjeta de crédito</option>
+              <option value="debit">Tarjeta de débito</option>
+            </select>
+            <select id="paymentCard">
+              <option value="visa">VISA</option>
+              <option value="mastercard">MasterCard</option>
+            </select>
+            <input style='width:20%' type="number" id="discount" min=1 max=100 placeholder="Descuento">
+          </div>
+          <div class="modal footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class='modalReservationTime' id='modalReservationTime'>
@@ -141,3 +149,5 @@
 <script src="/jquery-3.4.1.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/index.js" charset="utf-8"></script>
+<script src="/bootstrap.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
